@@ -1,35 +1,38 @@
 /* ─── CSS Variables & Design System ───────────────────── */
 :root {
-  /* Primary Palette */
-  --color-bg-deep: #0a0a1a;
-  --color-bg: #0f0f23;
-  --color-bg-card: #1a1a3e;
-  --color-bg-card-hover: #252560;
-  --color-surface: #16163a;
-  --color-border: #2a2a5e;
+  /* Primary Palette - Divine Theme */
+  --color-bg-deep: #050510;
+  --color-bg: #0a0a1f;
+  --color-bg-card: #151535;
+  --color-bg-card-hover: #1e1e4a;
+  --color-surface: #101030;
+  --color-border: #2a2a6e;
   
-  /* Accent Colors */
-  --color-primary: #6c5ce7;
+  /* Accent Colors - Divine/Godly */
+  --color-primary: #8e44ad; /* Divine Purple */
   --color-primary-glow: #a29bfe;
-  --color-secondary: #00cec9;
-  --color-accent: #fd79a8;
-  --color-gold: #ffd700;
-  --color-gold-glow: #fff3b0;
+  --color-secondary: #00d2d3; /* Celestial Cyan */
+  --color-accent: #e84393;
+  --color-gold: #f1c40f; /* Pure Gold */
+  --color-gold-glow: #fff4e0;
+  --color-divine-light: rgba(255, 255, 255, 0.9);
   
   /* Text */
-  --color-text: #e8e8f0;
-  --color-text-dim: #8888aa;
+  --color-text: #f0f0f5;
+  --color-text-dim: #9494b8;
   --color-text-bright: #ffffff;
   
-  /* Status */
-  --color-success: #00b894;
-  --color-danger: #e17055;
-  --color-warning: #fdcb6e;
+  /* Rarity Colors - Divine */
+  --color-ssr: #ffcc00; /* Radiant Gold */
+  --color-sr: #bf5af2;  /* Sacred Purple */
+  --color-r: #0a84ff;   /* Celestial Blue */
   
-  /* Rarity Colors */
-  --color-ssr: #FFD700;
-  --color-sr: #C084FC;
-  --color-r: #60A5FA;
+  /* Shadows & Glows */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.8);
+  --shadow-gold: 0 0 15px rgba(241, 196, 15, 0.4);
+  --shadow-divine: 0 0 30px rgba(162, 155, 254, 0.3);
   
   /* Spacing */
   --space-xs: 4px;
@@ -48,12 +51,6 @@
   /* Font */
   --font-main: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
   --font-display: 'Outfit', 'Noto Sans JP', sans-serif;
-  
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.3);
   
   /* Safe Area */
   --safe-top: env(safe-area-inset-top);
@@ -366,38 +363,36 @@ body {
   transform: scale(0.95);
 }
 
+/* ─── Divine Menu Buttons ───────────────────── */
 .menu-btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), #5a4bd4);
+  background: linear-gradient(135deg, var(--color-primary), #632a8c);
   color: white;
-  box-shadow: 0 4px 20px rgba(108, 92, 231, 0.4);
-  padding: var(--space-lg);
+  box-shadow: 0 4px 20px rgba(142, 68, 173, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.menu-btn-primary:hover {
-  box-shadow: 0 6px 30px rgba(108, 92, 231, 0.6);
-  transform: translateY(-2px);
-}
-
-.menu-btn-secondary {
-  background: var(--color-bg-card);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-}
-
-.menu-btn-secondary:hover {
-  background: var(--color-bg-card-hover);
-  border-color: var(--color-primary);
+.menu-btn-divine {
+  background: linear-gradient(135deg, #6c5ce7, #00d2d3) !important; /* Purple to Cyan blend */
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .menu-btn-tertiary {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.05);
   color: var(--color-text-dim);
   border: 1px solid var(--color-border);
+  backdrop-filter: blur(5px);
 }
 
-.menu-btn-tertiary:hover {
-  background: var(--color-surface);
-  color: var(--color-text);
+.menu-btn-primary:hover {
+  box-shadow: 0 6px 30px rgba(142, 68, 173, 0.6);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.menu-btn-divine:hover {
+  box-shadow: 0 6px 30px rgba(0, 210, 211, 0.4);
+  transform: translateY(-3px) scale(1.02);
 }
 
 .menu-icon {
@@ -1764,6 +1759,123 @@ input:checked + .toggle-slider::before {
   z-index: 0;
 }
 
+/* ─── Divine Game Screen Enhancements ───────────────────── */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md);
+  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+  border-bottom: 2px solid var(--color-gold);
+  min-height: 120px;
+}
+
+.divine-vs-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  flex: 1;
+}
+
+.divine-portrait-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-gold);
+  box-shadow: 0 0 15px rgba(241, 196, 15, 0.3);
+  overflow: hidden;
+  background: var(--color-bg-card);
+}
+
+.divine-portrait {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+.divine-rarity {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background: rgba(0,0,0,0.7);
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 2px 0;
+}
+
+.divine-player-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.divine-player-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-bright);
+  text-shadow: 0 1px 3px black;
+}
+
+.divine-stone-badge {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 2px 10px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-gold);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.divine-vs-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 var(--space-md);
+}
+
+.vs-label {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--color-gold);
+  font-style: italic;
+  text-shadow: 0 0 10px var(--color-gold);
+}
+
+.btn-skill {
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
+  border: 2px solid #fff;
+  color: #000;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-xl);
+  font-weight: 900;
+  font-size: 1.1rem;
+  box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+  animation: glowPulse 2s infinite alternate;
+}
+
+@keyframes glowPulse {
+  from { box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+  to { box-shadow: 0 0 30px rgba(241, 196, 15, 0.8); }
+}
+
+.btn-skill:disabled {
+  background: #333;
+  border-color: #555;
+  color: #777;
+  animation: none;
+  box-shadow: none;
+}
+
 .gacha-rates-table {
   display: flex;
   gap: var(--space-md);
@@ -1817,7 +1929,7 @@ input:checked + .toggle-slider::before {
 }
 
 
-/* ������ Premium Redesign ������������������������������������������ */
+/*  Premium Redesign  */
 .menu-btn {
   display: flex;
   flex-direction: column;

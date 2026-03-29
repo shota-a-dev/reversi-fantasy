@@ -53,11 +53,11 @@ export function createHomeScreen(): HTMLElement {
           </div>
           
           <div class="menu-row">
-            <button class="menu-btn menu-btn-secondary" id="btn-formation">
+            <button class="menu-btn menu-btn-divine" id="btn-formation">
               <span class="menu-icon">👥</span>
               <span class="menu-text">キャラクター</span>
             </button>
-            <button class="menu-btn menu-btn-secondary" id="btn-gacha">
+            <button class="menu-btn menu-btn-divine" id="btn-gacha">
               <span class="menu-icon">🎰</span>
               <span class="menu-text">ガチャ</span>
             </button>

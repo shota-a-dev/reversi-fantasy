@@ -40,8 +40,8 @@ export function createGachaScreen(): HTMLElement {
       <div class="gacha-bg-overlay"></div>
       <div class="screen-header">
         <button class="btn-back" id="gacha-back">← 戻る</button>
-        <h1 class="screen-title">精霊召喚</h1>
-        <div class="currency-badge">💎 ${data.currency}</div>
+        <h1 class="screen-title">ガチャ</h1>
+        <div class="currency-badge">💰 ${data.currency} 💎</div>
       </div>
       <div class="gacha-content">
         <div class="gacha-machine-container">
@@ -61,10 +61,10 @@ export function createGachaScreen(): HTMLElement {
         </div>
         <div class="gacha-buttons">
           <button class="btn-gacha btn-single" id="btn-gacha-single" ${data.currency < GACHA_COST ? 'disabled' : ''}>
-            単発召喚<br><small>💎 ${GACHA_COST}</small>
+            単発召喚<br><small>${GACHA_COST} 💎</small>
           </button>
           <button class="btn-gacha btn-ten" id="btn-gacha-ten" ${data.currency < GACHA_COST * 10 ? 'disabled' : ''}>
-            10連召喚<br><small>💎 ${GACHA_COST * 10}</small>
+            10連召喚<br><small>${GACHA_COST * 10} 💎</small>
           </button>
         </div>
       </div>

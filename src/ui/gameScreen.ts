@@ -20,23 +20,35 @@ export function createGameScreen(): HTMLElement {
 
   screen.innerHTML = `
     <div class="game-header">
-      <div class="player-info player-black" id="player-black-info">
-        <div class="player-icon" id="player-black-icon">⬛</div>
-        <div class="player-details">
-          <span class="player-name" id="player-black-name">Player</span>
-          <span class="player-stones" id="player-black-stones">2</span>
+      <button class="btn-back" id="btn-game-back">← 戻る</button>
+      <div class="divine-vs-player player-black" id="player-black-info">
+        <div class="divine-portrait-wrapper">
+          <div class="divine-portrait" id="player-black-icon"></div>
+          <div class="divine-rarity" id="player-black-rarity">SSR</div>
+        </div>
+        <div class="divine-player-meta">
+          <span class="divine-player-name" id="player-black-name">Player</span>
+          <div class="divine-stone-badge"><span id="player-black-stones">2</span></div>
         </div>
       </div>
-      <div class="turn-indicator" id="turn-indicator">
-        <div class="timer-display" id="timer-display">15</div>
-        <div class="turn-label" id="turn-label">黒のターン</div>
-      </div>
-      <div class="player-info player-white" id="player-white-info">
-        <div class="player-details">
-          <span class="player-name" id="player-white-name">CPU</span>
-          <span class="player-stones" id="player-white-stones">2</span>
+
+      <div class="divine-vs-center">
+        <div class="vs-label">VS</div>
+        <div class="turn-indicator" id="turn-indicator">
+          <div class="timer-display" id="timer-display">15</div>
+          <div class="turn-label" id="turn-label">あなたの手番</div>
         </div>
-        <div class="player-icon" id="player-white-icon">⬜</div>
+      </div>
+
+      <div class="divine-vs-player player-white" id="player-white-info">
+        <div class="divine-portrait-wrapper">
+          <div class="divine-portrait" id="player-white-icon"></div>
+          <div class="divine-rarity" id="player-white-rarity">SSR</div>
+        </div>
+        <div class="divine-player-meta">
+          <span class="divine-player-name" id="player-white-name">Opponent</span>
+          <div class="divine-stone-badge"><span id="player-white-stones">2</span></div>
+        </div>
       </div>
     </div>
     <div class="game-message" id="game-message"></div>
@@ -82,24 +94,35 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   // UI更新
   const blackIcon = document.getElementById('player-black-icon');
   const blackName = document.getElementById('player-black-name');
+  const blackRarity = document.getElementById('player-black-rarity');
   const whiteIcon = document.getElementById('player-white-icon');
   const whiteName = document.getElementById('player-white-name');
+  const whiteRarity = document.getElementById('player-white-rarity');
   const skillIcon = document.getElementById('skill-icon');
   const skillNameEl = document.getElementById('skill-name-display');
   const skillBtn = document.getElementById('btn-skill') as HTMLButtonElement;
 
   if (blackIcon) {
-    blackIcon.textContent = leaderChar.icon;
-    blackIcon.className = `player-icon ${leaderChar.imageUrl ? 'has-image' : ''}`;
+    blackIcon.textContent = leaderChar.imageUrl ? '' : leaderChar.icon;
+    blackIcon.className = `divine-portrait ${leaderChar.imageUrl ? 'has-image' : ''}`;
     if (leaderChar.imageUrl) (blackIcon as HTMLElement).style.backgroundImage = `url(${leaderChar.imageUrl})`;
   }
   if (blackName) blackName.textContent = leaderChar.name;
+  if (blackRarity) {
+    blackRarity.textContent = leaderChar.rarity;
+    blackRarity.className = `divine-rarity rarity-${leaderChar.rarity.toLowerCase()}`;
+  }
+
   if (whiteIcon) {
-    whiteIcon.textContent = opponentChar.icon;
-    whiteIcon.className = `player-icon ${opponentChar.imageUrl ? 'has-image' : ''}`;
+    whiteIcon.textContent = opponentChar.imageUrl ? '' : opponentChar.icon;
+    whiteIcon.className = `divine-portrait ${opponentChar.imageUrl ? 'has-image' : ''}`;
     if (opponentChar.imageUrl) (whiteIcon as HTMLElement).style.backgroundImage = `url(${opponentChar.imageUrl})`;
   }
   if (whiteName) whiteName.textContent = mode === 'ai' ? `CPU(Lv${aiLevel})` : opponentChar.name;
+  if (whiteRarity) {
+    whiteRarity.textContent = opponentChar.rarity;
+    whiteRarity.className = `divine-rarity rarity-${opponentChar.rarity.toLowerCase()}`;
+  }
   if (skillIcon) {
     skillIcon.textContent = leaderChar.icon;
     skillIcon.className = `skill-icon ${leaderChar.imageUrl ? 'has-image' : ''}`;
@@ -202,6 +225,19 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
     newSkillBtn.disabled = false;
     skillBtn.parentNode?.replaceChild(newSkillBtn, skillBtn);
     newSkillBtn.addEventListener('click', onSkillClick);
+  }
+
+  // 戻るボタン (投了扱い)
+  const gameBackBtn = document.getElementById('btn-game-back');
+  if (gameBackBtn) {
+    gameBackBtn.addEventListener('click', () => {
+      if (confirm('対局を中断して戻りますか？（負け扱いとなります）')) {
+        cleanupGame();
+        store.recordGame(false);
+        store.addCurrency(10);
+        screenManager.navigate('home');
+      }
+    });
   }
 
   // 投了ボタン
