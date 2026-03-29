@@ -113,9 +113,10 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   const skillBtn = document.getElementById('btn-skill') as HTMLButtonElement;
 
   if (blackIcon) {
+    const imgUrl = leaderChar.imageUrl ? `${leaderChar.imageUrl}` : '';
     blackIcon.textContent = leaderChar.imageUrl ? '' : leaderChar.icon;
     blackIcon.className = `divine-portrait ${leaderChar.imageUrl ? 'has-image' : ''}`;
-    if (leaderChar.imageUrl) (blackIcon as HTMLElement).style.backgroundImage = `url(${leaderChar.imageUrl})`;
+    if (leaderChar.imageUrl) (blackIcon as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
   if (blackName) blackName.textContent = leaderChar.name;
   if (blackRarity) {
@@ -124,9 +125,10 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   }
 
   if (whiteIcon) {
+    const imgUrl = opponentChar.imageUrl ? `${opponentChar.imageUrl}` : '';
     whiteIcon.textContent = opponentChar.imageUrl ? '' : opponentChar.icon;
     whiteIcon.className = `divine-portrait ${opponentChar.imageUrl ? 'has-image' : ''}`;
-    if (opponentChar.imageUrl) (whiteIcon as HTMLElement).style.backgroundImage = `url(${opponentChar.imageUrl})`;
+    if (opponentChar.imageUrl) (whiteIcon as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
   if (whiteName) whiteName.textContent = mode === 'ai' ? `CPU(Lv${aiLevel})` : opponentChar.name;
   if (whiteRarity) {
@@ -134,9 +136,10 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
     whiteRarity.className = `divine-rarity rarity-${opponentChar.rarity.toLowerCase()}`;
   }
   if (skillIcon) {
+    const imgUrl = leaderChar.imageUrl ? `${leaderChar.imageUrl}` : '';
     skillIcon.textContent = leaderChar.icon;
     skillIcon.className = `skill-icon ${leaderChar.imageUrl ? 'has-image' : ''}`;
-    if (leaderChar.imageUrl) (skillIcon as HTMLElement).style.backgroundImage = `url(${leaderChar.imageUrl})`;
+    if (leaderChar.imageUrl) (skillIcon as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
   if (skillNameEl) skillNameEl.textContent = leaderChar.activeSkill.name;
 

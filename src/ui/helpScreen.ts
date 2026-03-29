@@ -10,7 +10,8 @@ export function createHelpScreen(): HTMLElement {
 
   const charListHtml = CHARACTER_IDS.map(id => {
     const char = CHARACTERS[id];
-    const iconStyle = char.imageUrl ? `background-image: url(${char.imageUrl});` : `background-color: ${char.color}44; border: 1px solid ${char.color};`;
+    const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
+    const iconStyle = char.imageUrl ? `background-image: url(${imgUrl});` : `background-color: ${char.color}44; border: 1px solid ${char.color};`;
     const iconClass = `help-char-icon ${char.imageUrl ? 'has-image' : ''}`;
     
     return `

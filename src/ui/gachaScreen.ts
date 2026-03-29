@@ -118,7 +118,7 @@ export function createGachaScreen(): HTMLElement {
         <div class="gacha-result-cards">
           ${results.map(r => {
             const char = CHARACTERS[r.id];
-            const imgUrl = char.imageUrl ? `/${char.imageUrl}` : '';
+            const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
             return `
               <div class="gacha-result-card ${r.isNew ? 'new-char' : 'dupe-char'} rarity-${char.rarity.toLowerCase()}-bg"
                    style="animation-delay: ${results.indexOf(r) * 0.15}s">

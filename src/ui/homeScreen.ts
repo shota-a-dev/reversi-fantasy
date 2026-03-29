@@ -21,7 +21,7 @@ export function createHomeScreen(): HTMLElement {
         <div class="home-logo">
           <h1 class="game-title">盤上のファンタジア</h1>
           <p class="game-subtitle">- Skill Reversi -</p>
-          <div class="game-version">v${__APP_VERSION__}</div>
+          <div class="game-version">${__APP_VERSION__}</div>
         </div>
 
         <div class="home-leader-display">
@@ -182,13 +182,11 @@ export function createHomeScreen(): HTMLElement {
       btn.addEventListener('click', () => {
         selectedLevel = parseInt(btn.getAttribute('data-level') || '2');
         const levelNames = ['', '初級', '中級', '上級'];
-        // 相手の名前を伏せる
-        const opponentNames = ['', '？？？ (R)', '？？？ (SR)', '？？？ (SSR)'];
         
         if (diffSelectionArea && diffConfirmArea && diffConfirmText) {
           diffSelectionArea.style.display = 'none';
           diffConfirmArea.style.display = 'block';
-          diffConfirmText.innerHTML = `難易度: <strong>${levelNames[selectedLevel]}</strong><br>相手: <strong>${opponentNames[selectedLevel]}</strong><br><br>対戦を開始しますか？`;
+          diffConfirmText.innerHTML = `難易度: <strong>${levelNames[selectedLevel]}</strong><br><br>対戦を開始しますか？`;
           (screen.querySelector('#diff-modal-title') as HTMLElement).textContent = '⚔️ 対戦確認';
         }
       });

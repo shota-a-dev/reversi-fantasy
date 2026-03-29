@@ -30,7 +30,7 @@ export function createFormationScreen(): HTMLElement {
             const char = CHARACTERS[id];
             const state = data.characters[id];
             const isLeader = id === data.selectedLeader;
-            const imgUrl = char.imageUrl ? `/${char.imageUrl}` : '';
+            const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
             return `
               <div class="char-card ${state.owned ? 'owned' : 'locked'} ${isLeader ? 'selected' : ''}" 
                    data-char-id="${id}">
@@ -99,11 +99,12 @@ export function createFormationScreen(): HTMLElement {
 function renderCharacterCard(id: CharacterId, large: boolean = false): string {
   const char = CHARACTERS[id];
   const state = store.getCharacter(id);
+  const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
   return `
     <div class="leader-preview ${large ? 'large' : ''}">
       <div class="leader-icon ${char.imageUrl ? 'has-image' : ''}" 
-           style="background: ${char.imageUrl ? `url(${char.imageUrl})` : `linear-gradient(135deg, ${char.color}44, ${char.color})`}">
-        ${char.icon}
+           style="background-image: ${char.imageUrl ? `url(${imgUrl})` : `linear-gradient(135deg, ${char.color}44, ${char.color})`}">
+        ${char.imageUrl ? '' : char.icon}
       </div>
       <div class="leader-info">
         <span class="leader-name">${char.name}</span>
@@ -117,12 +118,13 @@ function renderCharacterCard(id: CharacterId, large: boolean = false): string {
 function renderCharacterDetail(id: CharacterId): string {
   const char = CHARACTERS[id];
   const state = store.getCharacter(id);
+  const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
   
   return `
     <div class="detail-header" style="border-color: ${char.color}">
       <div class="detail-icon ${char.imageUrl ? 'has-image' : ''}" 
-           style="background: ${char.imageUrl ? `url(${char.imageUrl})` : `linear-gradient(135deg, ${char.color}66, ${char.color})`}">
-        ${char.icon}
+           style="background-image: ${char.imageUrl ? `url(${imgUrl})` : `linear-gradient(135deg, ${char.color}66, ${char.color})`}">
+        ${char.imageUrl ? '' : char.icon}
       </div>
       <div>
         <h3>${char.name}</h3>
