@@ -4,8 +4,9 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "check-encoding": "node scripts/check-encoding.js",
+    "dev": "npm run check-encoding && vite",
+    "build": "npm run check-encoding && tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {

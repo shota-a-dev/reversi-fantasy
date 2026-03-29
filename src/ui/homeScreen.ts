@@ -44,11 +44,11 @@ export function createHomeScreen(): HTMLElement {
           <div class="menu-row">
             <button class="menu-btn menu-btn-primary" id="btn-ai-battle">
               <span class="menu-icon">⚔️</span>
-              <span class="menu-text">AI<br>対戦</span>
+              <span class="menu-text">AI対戦</span>
             </button>
             <button class="menu-btn menu-btn-primary" id="btn-online-battle">
               <span class="menu-icon">🌐</span>
-              <span class="menu-text">オンライン<br>対戦</span>
+              <span class="menu-text">オンライン対戦</span>
             </button>
           </div>
           

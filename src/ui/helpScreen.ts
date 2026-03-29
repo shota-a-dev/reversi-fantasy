@@ -83,6 +83,16 @@ export function createHelpScreen(): HTMLElement {
       </div>
 
       <div class="help-section">
+        <h2>🌐 オンライン対戦</h2>
+        <ul>
+          <li><strong>IDの共有</strong>: 自分のIDを相手に伝えます（クリップボードにコピー可能）。</li>
+          <li><strong>接続</strong>: 相手のIDを入力して「接続」ボタンを押します。</li>
+          <li><strong>準備完了</strong>: 両者が接続されると「対戦開始！」ボタンが表示されます。</li>
+          <li><strong>ホスト</strong>: 「対戦開始！」を押した側が先攻（黒）となります。</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
         <h2>👥 キャラクター一覧</h2>
         <div class="help-char-list">
           ${charListHtml}

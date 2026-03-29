@@ -11,9 +11,11 @@ export function createOnlineScreen(): HTMLElement {
   screen.style.display = 'none';
 
   screen.innerHTML = `
+    <div class="screen-header">
+      <button class="btn-back" id="btn-online-back">← 戻る</button>
+      <h1 class="screen-title">オンライン対戦</h1>
+    </div>
     <div class="online-container">
-      <h2 class="online-title">🌐 オンライン対戦</h2>
-      
       <div class="online-card" id="peer-id-section">
         <p>あなたのID:</p>
         <div class="id-display">
@@ -41,8 +43,6 @@ export function createOnlineScreen(): HTMLElement {
           対戦開始！
         </button>
       </div>
-
-      <button class="btn-secondary" id="btn-online-back">もどる</button>
     </div>
   `;
 

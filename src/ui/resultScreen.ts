@@ -28,6 +28,10 @@ export function showResultScreen(
   const data = store.getData();
 
   screen.innerHTML = `
+    <div class="screen-header">
+      <button class="btn-back" id="result-home">← 戻る</button>
+      <h1 class="screen-title">対戦結果</h1>
+    </div>
     <div class="result-container ${isWin ? 'result-win' : isDraw ? 'result-draw' : 'result-lose'}">
       <div class="result-banner">
         <h1 class="result-title">${isWin ? '🏆 VICTORY!' : isDraw ? '🤝 DRAW' : '💀 DEFEAT'}</h1>
@@ -79,7 +83,6 @@ export function showResultScreen(
 
       <div class="result-buttons">
         <button class="btn-primary btn-large" id="result-rematch">🔄 もう一度</button>
-        <button class="btn-secondary btn-large" id="result-home">🏠 ホームへ</button>
       </div>
     </div>
   `;

@@ -143,46 +143,64 @@ body {
 
 /* â”€â”€â”€ Screen Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .screen-header {
-  display: flex;
-  align-items: center;
-  padding: var(--space-md);
-  gap: var(--space-md);
-  background: linear-gradient(180deg, var(--color-bg) 0%, transparent 100%);
   position: sticky;
   top: 0;
-  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 64px;
+  padding: 0 var(--space-xl);
+  background: var(--color-bg);
   backdrop-filter: blur(10px);
-}
-
-.screen-title {
-  flex: 1;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 700;
-  text-align: center;
-  background: linear-gradient(135deg, var(--color-primary-glow), var(--color-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .btn-back {
+  position: absolute;
+  left: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  padding: var(--space-xs) var(--space-md);
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
+  border: none;
+  color: var(--color-text-dim);
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
+  padding: var(--space-xs) var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   transition: all 0.2s;
 }
-.btn-back:hover { background: var(--color-bg-card); }
+
+.btn-back:hover {
+  color: var(--color-primary-glow);
+  transform: translateY(-50%) translateX(-2px);
+}
+
+.screen-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-align: center;
+  background: linear-gradient(180deg, var(--color-primary-glow), var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--color-primary-glow);
+  text-shadow: 0 0 15px rgba(108, 92, 231, 0.2);
+}
 
 .currency-display {
-  padding: var(--space-xs) var(--space-md);
-  background: linear-gradient(135deg, var(--color-gold)22, var(--color-gold)11);
-  border: 1px solid var(--color-gold)44;
-  border-radius: var(--radius-sm);
+  position: absolute;
+  right: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
   font-size: 0.85rem;
   color: var(--color-gold);
   font-weight: 600;
@@ -1562,23 +1580,38 @@ input:checked + .toggle-slider::before {
   font-size: 0.95rem;
 }
 
-/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Refined Menu Buttons ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
-.menu-btn-primary {
-  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%) !important;
-  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+/* â”€â”€â”€ Shared UI Elements â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.btn-back {
+  position: absolute;
+  left: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-dim);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--space-xs) var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+  z-index: 10;
 }
 
-.menu-btn-accent {
-  background: linear-gradient(135deg, #00b894 0%, #55efc4 100%) !important;
-  box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4);
+.btn-back:hover {
+  color: var(--color-primary-glow);
+  transform: translateX(-2px);
 }
 
-.menu-btn:hover {
-  filter: brightness(1.1);
-  transform: translateY(-3px);
+.menu-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Enhanced Online Screen ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+/*  Enhanced Online Screen  */
 .online-container {
   display: flex;
   flex-direction: column;
@@ -1784,7 +1817,7 @@ input:checked + .toggle-slider::before {
 }
 
 
-/* „Ÿ„Ÿ„Ÿ Premium Redesign „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Premium Redesign ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .menu-btn {
   display: flex;
   flex-direction: column;
@@ -1821,7 +1854,7 @@ input:checked + .toggle-slider::before {
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
-/* „Ÿ„Ÿ„Ÿ Online Screen Input Enhancement „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Online Screen Input Enhancement ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .id-input-group {
   display: flex;
   align-items: stretch;
