@@ -12,6 +12,8 @@ export function createFormationScreen(): HTMLElement {
 
   const render = () => {
     const data = store.getData();
+    // 所持している神格のみをフィルタリング
+    const ownedIds = CHARACTER_IDS.filter(id => data.characters[id].owned);
 
     screen.innerHTML = `
       <div class="screen-header">
@@ -19,20 +21,14 @@ export function createFormationScreen(): HTMLElement {
         <h1 class="screen-title">神格</h1>
       </div>
       <div class="formation-content">
-        <div class="leader-section">
-          <h2 class="section-title">リーダー</h2>
-          <div class="leader-card" id="leader-display">
-            ${renderCharacterCard(data.selectedLeader, true)}
-          </div>
-        </div>
         <div class="character-grid">
-          ${CHARACTER_IDS.map(id => {
+          ${ownedIds.map(id => {
             const char = CHARACTERS[id];
             const state = data.characters[id];
             const isLeader = id === data.selectedLeader;
             const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
             return `
-              <div class="char-card ${state.owned ? 'owned' : 'locked'} ${isLeader ? 'selected' : ''}" 
+              <div class="char-card owned ${isLeader ? 'selected' : ''}" 
                    data-char-id="${id}">
                 <div class="char-icon ${char.imageUrl ? 'has-image' : ''}"
                      style="background-image: ${char.imageUrl ? `url(${imgUrl})` : 'none'}">
@@ -40,17 +36,19 @@ export function createFormationScreen(): HTMLElement {
                 </div>
                 <div class="char-name">${char.name}</div>
                 <div class="char-rarity rarity-${char.rarity.toLowerCase()}">${char.rarity}</div>
-                ${state.owned ? `
-                  <div class="uncap-stars">
-                    ${'★'.repeat(state.uncapLevel)}${'☆'.repeat(5 - state.uncapLevel)}
-                  </div>
-                ` : '<div class="lock-overlay">🔒</div>'}
+                <div class="uncap-stars">
+                  ${'★'.repeat(state.uncapLevel)}${'☆'.repeat(5 - state.uncapLevel)}
+                </div>
               </div>
             `;
           }).join('')}
         </div>
-        <div class="char-detail" id="char-detail-panel">
-          ${renderCharacterDetail(data.selectedLeader)}
+      </div>
+
+      <!-- 詳細モーダル -->
+      <div class="detail-modal-overlay" id="detail-modal">
+        <div class="detail-modal-content" id="detail-modal-content">
+          <!-- 内容は動的に生成 -->
         </div>
       </div>
     `;
@@ -60,59 +58,62 @@ export function createFormationScreen(): HTMLElement {
       screenManager.back();
     });
 
-    screen.querySelectorAll('.char-card.owned').forEach(card => {
-      card.addEventListener('click', () => {
-        const id = card.getAttribute('data-char-id') as CharacterId;
-        store.setLeader(id);
-        render();
-      });
-    });
-
-    // キャラ詳細表示
+    // カードタップで詳細表示
     screen.querySelectorAll('.char-card').forEach(card => {
       card.addEventListener('click', () => {
         const id = card.getAttribute('data-char-id') as CharacterId;
-        const detail = document.getElementById('char-detail-panel');
-        if (detail) {
-          detail.innerHTML = renderCharacterDetail(id);
-        }
+        showDetail(id);
       });
+    });
+  };
+
+  const showDetail = (id: CharacterId) => {
+    const modal = screen.querySelector('#detail-modal') as HTMLElement;
+    const content = screen.querySelector('#detail-modal-content') as HTMLElement;
+    if (!modal || !content) return;
+
+    const char = CHARACTERS[id];
+    const data = store.getData();
+    const isLeader = id === data.selectedLeader;
+
+    content.innerHTML = `
+      <button class="btn-modal-close" id="detail-close">✕</button>
+      ${renderCharacterDetail(id)}
+      <button class="btn-select-leader" id="btn-set-leader" ${isLeader ? 'disabled' : ''}>
+        ${isLeader ? '選択中' : '選択する'}
+      </button>
+    `;
+
+    modal.classList.add('active');
+
+    content.querySelector('#detail-close')?.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+
+    content.querySelector('#btn-set-leader')?.addEventListener('click', () => {
+      store.setLeader(id);
+      modal.classList.remove('active');
+      render();
+    });
+
+    // 背景タップで閉じる
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
     });
   };
 
   render();
 
-  // 画面遷移時に再レンダリング（ガチャ後に反映されるように）
+  // 画面遷移時に再レンダリング
   screenManager.onChange((to) => {
-  if (to === 'formation') {
-    render();
-  }
-  });
-
-  // 初回表示時にもデータを確実に取得
-  screen.addEventListener('show', () => {
-  render();
+    if (to === 'formation') {
+      render();
+    }
   });
 
   return screen;
-  }
-function renderCharacterCard(id: CharacterId, large: boolean = false): string {
-  const char = CHARACTERS[id];
-  const state = store.getCharacter(id);
-  const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
-  return `
-    <div class="leader-preview ${large ? 'large' : ''}">
-      <div class="leader-icon ${char.imageUrl ? 'has-image' : ''}" 
-           style="background-image: ${char.imageUrl ? `url(${imgUrl})` : `linear-gradient(135deg, ${char.color}44, ${char.color})`}">
-        ${char.imageUrl ? '' : char.icon}
-      </div>
-      <div class="leader-info">
-        <span class="leader-name">${char.name}</span>
-        <span class="leader-title">${char.title}</span>
-        <span class="uncap-stars">${'★'.repeat(state.uncapLevel)}${'☆'.repeat(5 - state.uncapLevel)}</span>
-      </div>
-    </div>
-  `;
 }
 
 function renderCharacterDetail(id: CharacterId): string {
@@ -134,12 +135,12 @@ function renderCharacterDetail(id: CharacterId): string {
     </div>
     <div class="detail-skills">
       <div class="skill-box active-skill">
-        <h4>🗡️ アクティブスキル</h4>
+        <h4>🗡️ 権能（アクティブ）</h4>
         <p class="skill-name">${char.activeSkill.name}</p>
         <p class="skill-desc">${char.activeSkill.description}</p>
       </div>
       <div class="skill-box passive-skill">
-        <h4>🛡️ パッシブスキル</h4>
+        <h4>🛡️ 加護（パッシブ）</h4>
         <p class="skill-name">${char.passiveSkill.name}</p>
         <p class="skill-desc">${char.passiveSkill.description}</p>
       </div>

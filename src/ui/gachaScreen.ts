@@ -41,13 +41,13 @@ export function createGachaScreen(): HTMLElement {
       <div class="screen-header">
         <button class="btn-back" id="gacha-back">← 戻る</button>
         <h1 class="screen-title">神託</h1>
-        <div class="currency-badge">💰 ${data.currency} 💎</div>
+        <div class="currency-badge">💎 ${data.currency} </div>
       </div>
       <div class="gacha-content">
         <div class="gacha-machine-container">
           <div class="gacha-machine">
             <div class="gacha-orb" id="gacha-orb">
-              <div class="gacha-orb-inner">🔮</div>
+              <div class="gacha-orb-image"></div>
             </div>
             <div class="gacha-light-beam"></div>
           </div>

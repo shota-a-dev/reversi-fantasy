@@ -20,7 +20,7 @@ export function createHomeScreen(): HTMLElement {
       <div class="home-content">
         <div class="home-logo">
           <h1 class="game-title">神々の対局</h1>
-          <p class="game-subtitle">- Divine Reversi -</p>
+          <p class="game-subtitle">- Duel of Deities -</p>
           <div class="game-version">${__APP_VERSION__}</div>
         </div>
 

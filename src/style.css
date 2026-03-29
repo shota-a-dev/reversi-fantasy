@@ -580,67 +580,10 @@ body {
   gap: var(--space-lg);
 }
 
-.section-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-primary-glow);
-  margin-bottom: var(--space-sm);
-}
-
-.leader-section {
-  text-align: center;
-}
-
-.leader-card {
-  display: inline-block;
-}
-
-.leader-preview {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md);
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-}
-
-.leader-preview.large .leader-icon {
-  width: 72px;
-  height: 72px;
-  font-size: 2.5rem;
-}
-
-.leader-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-}
-
-.leader-info {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
-
-.leader-name {
-  font-weight: 700;
-  font-size: 1.05rem;
-}
-
-.leader-title {
-  font-size: 0.8rem;
-  color: var(--color-text-dim);
-}
-
 .character-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 .char-card {
@@ -667,20 +610,22 @@ body {
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }
 
-.char-card.locked {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .char-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-sm);
   font-size: 2rem;
   margin-bottom: var(--space-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .char-name {
   font-size: 0.8rem;
   font-weight: 600;
   text-align: center;
+  color: var(--color-text-bright);
 }
 
 .char-rarity {
@@ -702,17 +647,61 @@ body {
   letter-spacing: 1px;
 }
 
-.lock-overlay {
-  font-size: 1.5rem;
-  margin-top: var(--space-xs);
+/* Detail Modal */
+.detail-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(10px);
+  padding: var(--space-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
 }
 
-/* Character Detail Panel */
-.char-detail {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
+.detail-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.detail-modal-content {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-lg);
+  position: relative;
+  transform: scale(0.8);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(241, 196, 15, 0.3);
+}
+
+.detail-modal-overlay.active .detail-modal-content {
+  transform: scale(1);
+}
+
+.btn-modal-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
 }
 
 .detail-header {
@@ -727,28 +716,23 @@ body {
 }
 
 .detail-icon {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 2.2rem;
 }
 
 .detail-header h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
 .detail-title {
   font-size: 0.8rem;
   color: var(--color-text-dim);
-}
-
-.detail-rarity {
-  font-size: 0.75rem;
-  font-weight: 800;
 }
 
 .detail-skills {
@@ -761,7 +745,7 @@ body {
 .skill-box {
   padding: var(--space-md);
   border-radius: var(--radius-sm);
-  background: var(--color-bg-card);
+  background: var(--color-bg-card-hover);
 }
 
 .skill-box h4 {
@@ -772,7 +756,7 @@ body {
 
 .skill-name {
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--color-text-bright);
 }
 
@@ -808,63 +792,63 @@ body {
   opacity: 0.4;
 }
 
-.uncap-level {
-  font-weight: 700;
-  color: var(--color-gold);
-  min-width: 30px;
-}
-
-/* ─── Gacha Screen ───────────────────── */
-.gacha-content {
+.btn-select-leader {
+  width: 100%;
+  margin-top: var(--space-lg);
   padding: var(--space-md);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-lg);
-}
-
-.gacha-machine {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-md);
-}
-
-.gacha-orb {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #a29bfe, #6c5ce7, #3d2b8c);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 40px rgba(108, 92, 231, 0.5), inset 0 0 30px rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s;
+  background: linear-gradient(135deg, var(--color-gold), #d35400);
+  color: #000;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 1rem;
   cursor: pointer;
 }
 
-.gacha-orb:hover {
-  transform: scale(1.05);
+.btn-select-leader:disabled {
+  background: #333;
+  color: #777;
+  cursor: default;
 }
 
-.gacha-orb-inner {
-  font-size: 2.5rem;
-  animation: orbPulse 2s ease-in-out infinite;
+/* ─── Gacha Screen ───────────────────── */
+.gacha-machine {
+  position: relative;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-@keyframes orbPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+.gacha-orb {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  /* 紫の丸を廃止し、神聖な光彩（グロー）に変更 */
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 60px rgba(162, 155, 254, 0.2); /* 非常に柔らかなグロー */
+  position: relative;
 }
 
-.gacha-spinning {
-  animation: gachaSpin 1.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+.gacha-orb::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle, rgba(241, 196, 15, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: -1;
+  animation: orbHalo 4s infinite alternate ease-in-out;
 }
 
-@keyframes gachaSpin {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(720deg) scale(1.3); box-shadow: 0 0 80px rgba(255, 215, 0, 0.8); }
-  100% { transform: rotate(1080deg) scale(1); }
+@keyframes orbHalo {
+  from { transform: scale(1); opacity: 0.5; }
+  to { transform: scale(1.2); opacity: 0.8; }
 }
 
 .gacha-rates {

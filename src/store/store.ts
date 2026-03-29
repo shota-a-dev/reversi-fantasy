@@ -31,13 +31,12 @@ function createDefaultData(): PlayerData {
   for (const id of CHARACTER_IDS) {
     characters[id] = { owned: false, uncapLevel: 0 };
   }
-  // 初期キャラとしてアルフレッドとゼフィルを所持
-  characters.alfred = { owned: true, uncapLevel: 0 };
+  // 初期キャラとしてヘルメスのみを所持
   characters.zephyr = { owned: true, uncapLevel: 0 };
 
   return {
     characters,
-    selectedLeader: 'alfred',
+    selectedLeader: 'zephyr',
     currency: 500,
     totalGames: 0,
     totalWins: 0,
