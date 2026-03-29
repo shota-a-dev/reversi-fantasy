@@ -5,7 +5,7 @@ import { CHARACTER_IDS } from '../core/constants';
 export function createHelpScreen(): HTMLElement {
   const screen = document.createElement('div');
   screen.id = 'screen-help';
-  screen.className = 'screen';
+  screen.className = 'screen screen-scrollable';
   screen.style.display = 'none';
 
   const charListHtml = CHARACTER_IDS.map(id => {

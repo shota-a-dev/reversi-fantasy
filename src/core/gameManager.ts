@@ -421,13 +421,39 @@ export class GameManager {
 
     setTimeout(() => {
       if (this.state.phase !== 'playing') return;
+
+      const player = this.state.currentPlayer;
+      const playerInfo = this.state.players[player];
+
+      // AIのスキル使用判断
+      if (!playerInfo.activeSkillUsed) {
+        const counts = countStones(this.state.board);
+        const myCount = player === BLACK ? counts.black : counts.white;
+        const opCount = player === BLACK ? counts.white : counts.black;
+
+        // 条件: 1.中級以上 2.石の数が負けている or 3.一定の確率 (20%)
+        const shouldSkill = this.state.aiLevel >= 2 && (
+          (opCount > myCount + 5) || 
+          (Math.random() < 0.2)
+        );
+
+        if (shouldSkill) {
+          this.activateSkill();
+          // スキル使用後、盤面が変わるため合法手を再計算（activateSkill内で処理済み）
+          // スキルによってはそのまま自分のターンが続く場合もあるため、少し待ってから移動をリクエスト
+          if (this.state.currentPlayer === player) {
+            this.requestAIMove();
+            return;
+          }
+        }
+      }
       
       this.aiWorker?.postMessage({
         board: this.state.board,
         player: this.state.currentPlayer,
         level: this.state.aiLevel
       });
-    }, 500 + Math.random() * 800);
+    }, 800 + Math.random() * 800);
   }
 
   // AIメソッドはWorkerに集約したため削除

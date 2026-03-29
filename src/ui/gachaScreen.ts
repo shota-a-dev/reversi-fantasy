@@ -28,7 +28,7 @@ function rollGacha(): CharacterId {
 export function createGachaScreen(): HTMLElement {
   const screen = document.createElement('div');
   screen.id = 'screen-gacha';
-  screen.className = 'screen';
+  screen.className = 'screen screen-scrollable';
   screen.style.display = 'none';
 
   let isAnimating = false;
@@ -110,46 +110,44 @@ export function createGachaScreen(): HTMLElement {
 
     // 演出: 1.5秒後に結果表示
     setTimeout(() => {
-      if (orb) orb.classList.remove('gacha-spinning');
+    if (orb) orb.classList.remove('gacha-spinning');
 
-      if (resultPanel) {
-        resultPanel.style.display = 'block';
-        resultPanel.innerHTML = `
-          <div class="gacha-result-cards">
-            ${results.map(r => {
-              const char = CHARACTERS[r.id];
-              return `
-                <div class="gacha-result-card ${r.isNew ? 'new-char' : 'dupe-char'} rarity-${char.rarity.toLowerCase()}-bg"
-                     style="animation-delay: ${results.indexOf(r) * 0.15}s">
-                  <div class="result-rarity">${char.rarity}</div>
-                  <div class="result-icon ${char.imageUrl ? 'has-image' : ''}" 
-                       style="${char.imageUrl ? `background-image: url(${char.imageUrl})` : `background-color: ${char.color}44`}">
-                    ${char.imageUrl ? '' : char.icon}
-                  </div>
-                  <div class="result-name">${char.name}</div>
-                  <div class="result-status">
-                    ${r.isNew ? '<span class="new-badge">NEW!</span>' : `<span class="dupe-badge">凸${r.uncapLevel}</span>`}
-                  </div>
+    if (resultPanel) {
+      resultPanel.style.display = 'block';
+      resultPanel.innerHTML = `
+        <div class="gacha-result-cards">
+          ${results.map(r => {
+            const char = CHARACTERS[r.id];
+            const imgUrl = char.imageUrl ? `/${char.imageUrl}` : '';
+            return `
+              <div class="gacha-result-card ${r.isNew ? 'new-char' : 'dupe-char'} rarity-${char.rarity.toLowerCase()}-bg"
+                   style="animation-delay: ${results.indexOf(r) * 0.15}s">
+                <div class="result-rarity">${char.rarity}</div>
+                <div class="result-icon ${char.imageUrl ? 'has-image' : ''}" 
+                     style="background-image: ${char.imageUrl ? `url(${imgUrl})` : 'none'}; background-color: ${char.imageUrl ? 'transparent' : `${char.color}44`}">
+                  ${char.imageUrl ? '' : char.icon}
                 </div>
-              `;
-            }).join('')}
-          </div>
-          <button class="btn-gacha-ok" id="gacha-ok">OK</button>
-        `;
+                <div class="result-name">${char.name}</div>
+                <div class="result-status">
+                  ${r.isNew ? '<span class="new-badge">NEW!</span>' : `<span class="dupe-badge">凸${r.uncapLevel}</span>`}
+                </div>
+              </div>            `;
+          }).join('')}        </div>
+        <button class="btn-gacha-ok" id="gacha-ok">OK</button>
+      `;
 
-        resultPanel.querySelector('#gacha-ok')?.addEventListener('click', () => {
-          isAnimating = false;
-          render();
-        });
-      }
+      resultPanel.querySelector('#gacha-ok')?.addEventListener('click', () => {
+        isAnimating = false;
+        render();
+      });
+    }
 
-      // 通貨表示更新
-      const currencyDisplay = screen.querySelector('.currency-badge');
-      if (currencyDisplay) {
-        currencyDisplay.textContent = `💎 ${store.getCurrency()}`;
-      }
-    }, 1500);
-  };
+    // 通貨表示更新（アイコンを維持）
+    const currencyDisplay = screen.querySelector('.currency-badge');
+    if (currencyDisplay) {
+      currencyDisplay.innerHTML = `💎 ${store.getCurrency()}`;
+    }
+    }, 1500);  };
 
   render();
   return screen;

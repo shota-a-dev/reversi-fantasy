@@ -3,18 +3,18 @@ import type { GameState } from '../core/gameManager';
 
 // ─── 描画定数 ─────
 const CELL_COLORS = {
-  board: '#0a0a25',      // Deep Celestial Blue
-  boardDark: '#050515',  // Abyss
-  border: '#f1c40f88',   // Faded Gold
-  validMove: 'rgba(241, 196, 15, 0.3)',
-  lastMove: 'rgba(255, 255, 255, 0.2)',
-  skillAffected: 'rgba(142, 68, 173, 0.5)',
-  preview: 'rgba(0, 210, 211, 0.4)',
+  board: '#1a4a2e',      // Rich Forest Green
+  boardDark: '#123521',  // Deep Emerald Abyss
+  border: '#d4af3788',   // Metallic Gold
+  validMove: 'rgba(241, 196, 15, 0.4)',
+  lastMove: 'rgba(255, 255, 255, 0.25)',
+  skillAffected: 'rgba(142, 68, 173, 0.6)',
+  preview: 'rgba(0, 210, 211, 0.5)',
 };
 
 const STONE_COLORS: Record<number, { fill: string; stroke: string; highlight: string }> = {
-  [BLACK]: { fill: '#2d3436', stroke: '#000000', highlight: '#636e72' }, // Dark Slate
-  [WHITE]: { fill: '#f1c40f', stroke: '#b8860b', highlight: '#fff4e0' }, // Radiant Gold
+  [BLACK]: { fill: '#0a0a0a', stroke: '#444444', highlight: '#666666' }, // Darker Black with more contrast
+  [WHITE]: { fill: '#ffffff', stroke: '#bbbbbb', highlight: '#ffffff' }, // Pure White
 };
 
 interface AnimatingStone {

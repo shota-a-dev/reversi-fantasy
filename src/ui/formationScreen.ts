@@ -7,7 +7,7 @@ import { screenManager } from './screenManager';
 export function createFormationScreen(): HTMLElement {
   const screen = document.createElement('div');
   screen.id = 'screen-formation';
-  screen.className = 'screen';
+  screen.className = 'screen screen-scrollable';
   screen.style.display = 'none';
 
   const render = () => {
@@ -17,7 +17,6 @@ export function createFormationScreen(): HTMLElement {
       <div class="screen-header">
         <button class="btn-back" id="formation-back">← 戻る</button>
         <h1 class="screen-title">キャラクター</h1>
-        <div class="currency-display">💎 ${data.currency}</div>
       </div>
       <div class="formation-content">
         <div class="leader-section">
@@ -31,12 +30,13 @@ export function createFormationScreen(): HTMLElement {
             const char = CHARACTERS[id];
             const state = data.characters[id];
             const isLeader = id === data.selectedLeader;
+            const imgUrl = char.imageUrl ? `/${char.imageUrl}` : '';
             return `
               <div class="char-card ${state.owned ? 'owned' : 'locked'} ${isLeader ? 'selected' : ''}" 
                    data-char-id="${id}">
                 <div class="char-icon ${char.imageUrl ? 'has-image' : ''}"
-                     style="background: ${char.imageUrl ? `url(${char.imageUrl})` : 'transparent'}">
-                  ${char.icon}
+                     style="background-image: ${char.imageUrl ? `url(${imgUrl})` : 'none'}">
+                  ${char.imageUrl ? '' : char.icon}
                 </div>
                 <div class="char-name">${char.name}</div>
                 <div class="char-rarity rarity-${char.rarity.toLowerCase()}">${char.rarity}</div>
@@ -81,9 +81,21 @@ export function createFormationScreen(): HTMLElement {
   };
 
   render();
-  return screen;
-}
 
+  // 画面遷移時に再レンダリング（ガチャ後に反映されるように）
+  screenManager.onChange((to) => {
+  if (to === 'formation') {
+    render();
+  }
+  });
+
+  // 初回表示時にもデータを確実に取得
+  screen.addEventListener('show', () => {
+  render();
+  });
+
+  return screen;
+  }
 function renderCharacterCard(id: CharacterId, large: boolean = false): string {
   const char = CHARACTERS[id];
   const state = store.getCharacter(id);

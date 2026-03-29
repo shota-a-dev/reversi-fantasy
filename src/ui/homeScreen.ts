@@ -81,21 +81,30 @@ export function createHomeScreen(): HTMLElement {
       <!-- 難易度選択モーダル -->
       <div class="modal-overlay" id="difficulty-modal" style="display: none;">
         <div class="modal-content difficulty-modal-content">
-          <h2>⚔️ AI対戦 - 難易度選択</h2>
-          <p>挑戦するレベルを選んでください</p>
-          <div class="difficulty-options">
-            <button class="menu-btn diff-select-btn" data-level="1">
-              <span class="diff-title">初級</span>
-              <span class="diff-desc">初めての方にオススメ</span>
-            </button>
-            <button class="menu-btn diff-select-btn" data-level="2">
-              <span class="diff-title">中級</span>
-              <span class="diff-desc">標準的なAIと勝負</span>
-            </button>
-            <button class="menu-btn diff-select-btn" data-level="3">
-              <span class="diff-title">上級</span>
-              <span class="diff-desc">最強のAIに挑戦！(報酬アップ)</span>
-            </button>
+          <h2 id="diff-modal-title">⚔️ AI対戦 - 難易度選択</h2>
+          <div id="diff-selection-area">
+            <p>挑戦するレベルを選んでください</p>
+            <div class="difficulty-options">
+              <button class="menu-btn diff-select-btn" data-level="1">
+                <span class="diff-title">初級</span>
+                <span class="diff-desc">初めての方にオススメ (相手: R)</span>
+              </button>
+              <button class="menu-btn diff-select-btn" data-level="2">
+                <span class="diff-title">中級</span>
+                <span class="diff-desc">標準的なAIと勝負 (相手: SR)</span>
+              </button>
+              <button class="menu-btn diff-select-btn" data-level="3">
+                <span class="diff-title">上級</span>
+                <span class="diff-desc">最強のAIに挑戦！ (相手: SSR)</span>
+              </button>
+            </div>
+          </div>
+          <div id="diff-confirm-area" style="display: none; text-align: center;">
+            <p id="diff-confirm-text"></p>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+              <button class="menu-btn menu-btn-primary" id="btn-difficulty-start" style="flex: 1;">対戦開始！</button>
+              
+            </div>
           </div>
           <button class="btn-secondary modal-close" id="difficulty-close">戻る</button>
         </div>
@@ -111,6 +120,10 @@ export function createHomeScreen(): HTMLElement {
               <input type="checkbox" id="setting-colorblind" ${data.settings.colorBlindMode ? 'checked' : ''}>
               <span class="toggle-slider"></span>
             </label>
+          </div>
+          <div class="setting-item">
+            <label>デバッグ（ダイヤ+100）</label>
+            <button class="btn-primary" id="btn-debug-currency" style="padding: 4px 12px; font-size: 0.8rem;">追加</button>
           </div>
           <div class="setting-item">
             <label>データリセット</label>
@@ -160,22 +173,53 @@ export function createHomeScreen(): HTMLElement {
     });
 
     // 難易度選択モーダル
+    let selectedLevel = 2;
+    const diffSelectionArea = screen.querySelector('#diff-selection-area') as HTMLElement;
+    const diffConfirmArea = screen.querySelector('#diff-confirm-area') as HTMLElement;
+    const diffConfirmText = screen.querySelector('#diff-confirm-text') as HTMLElement;
+
     screen.querySelectorAll('.diff-select-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const level = parseInt(btn.getAttribute('data-level') || '2');
-        store.updateSettings({ aiDifficulty: level });
+        selectedLevel = parseInt(btn.getAttribute('data-level') || '2');
+        const levelNames = ['', '初級', '中級', '上級'];
+        // 相手の名前を伏せる
+        const opponentNames = ['', '？？？ (R)', '？？？ (SR)', '？？？ (SSR)'];
         
-        const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
-        if (modal) modal.style.display = 'none';
-
-        screenManager.navigate('game');
-        setTimeout(() => startGame('ai', level), 100);
+        if (diffSelectionArea && diffConfirmArea && diffConfirmText) {
+          diffSelectionArea.style.display = 'none';
+          diffConfirmArea.style.display = 'block';
+          diffConfirmText.innerHTML = `難易度: <strong>${levelNames[selectedLevel]}</strong><br>相手: <strong>${opponentNames[selectedLevel]}</strong><br><br>対戦を開始しますか？`;
+          (screen.querySelector('#diff-modal-title') as HTMLElement).textContent = '⚔️ 対戦確認';
+        }
       });
+    });
+
+    screen.querySelector('#btn-difficulty-start')?.addEventListener('click', () => {
+      store.updateSettings({ aiDifficulty: selectedLevel });
+      const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
+      if (modal) modal.style.display = 'none';
+
+      screenManager.navigate('game');
+      setTimeout(() => startGame('ai', selectedLevel), 100);
+    });
+
+    screen.querySelector('#btn-difficulty-cancel')?.addEventListener('click', () => {
+      if (diffSelectionArea && diffConfirmArea) {
+        diffSelectionArea.style.display = 'block';
+        diffConfirmArea.style.display = 'none';
+        (screen.querySelector('#diff-modal-title') as HTMLElement).textContent = '⚔️ AI対戦 - 難易度選択';
+      }
     });
 
     screen.querySelector('#difficulty-close')?.addEventListener('click', () => {
       const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
       if (modal) modal.style.display = 'none';
+      // 状態をリセット
+      if (diffSelectionArea && diffConfirmArea) {
+        diffSelectionArea.style.display = 'block';
+        diffConfirmArea.style.display = 'none';
+        (screen.querySelector('#diff-modal-title') as HTMLElement).textContent = '⚔️ AI対戦 - 難易度選択';
+      }
     });
 
     // 解説表示
@@ -217,6 +261,11 @@ export function createHomeScreen(): HTMLElement {
     screen.querySelector('#setting-colorblind')?.addEventListener('change', (e) => {
       const checked = (e.target as HTMLInputElement).checked;
       store.updateSettings({ colorBlindMode: checked });
+    });
+
+    screen.querySelector('#btn-debug-currency')?.addEventListener('click', () => {
+      store.addCurrency(100);
+      render();
     });
 
     screen.querySelector('#btn-reset-data')?.addEventListener('click', () => {

@@ -20,7 +20,29 @@ export function createGameScreen(): HTMLElement {
 
   screen.innerHTML = `
     <div class="game-header">
-      <button class="btn-back" id="btn-game-back">← 戻る</button>
+      <div class="divine-vs-player player-white" id="player-white-info">
+        <div class="divine-portrait-wrapper">
+          <div class="divine-portrait" id="player-white-icon"></div>
+          <div class="divine-rarity" id="player-white-rarity">SSR</div>
+        </div>
+        <div class="divine-player-meta">
+          <span class="divine-player-name" id="player-white-name">Opponent</span>
+          <div class="divine-stone-badge"><span id="player-white-stones">2</span></div>
+        </div>
+      </div>
+      <div class="divine-vs-center">
+        <div class="timer-display" id="timer-display">15</div>
+        <div class="turn-label" id="turn-label">相手の手番</div>
+      </div>
+    </div>
+
+    <div class="game-message" id="game-message"></div>
+    
+    <div class="board-container" id="board-container">
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <div class="game-footer">
       <div class="divine-vs-player player-black" id="player-black-info">
         <div class="divine-portrait-wrapper">
           <div class="divine-portrait" id="player-black-icon"></div>
@@ -32,35 +54,13 @@ export function createGameScreen(): HTMLElement {
         </div>
       </div>
 
-      <div class="divine-vs-center">
-        <div class="vs-label">VS</div>
-        <div class="turn-indicator" id="turn-indicator">
-          <div class="timer-display" id="timer-display">15</div>
-          <div class="turn-label" id="turn-label">あなたの手番</div>
-        </div>
+      <div class="game-controls">
+        <button class="btn-skill" id="btn-skill" disabled>
+          <span class="skill-icon" id="skill-icon">⚡</span>
+          <span class="skill-name" id="skill-name-display">スキル</span>
+        </button>
+        <button class="btn-secondary" id="btn-surrender">🏳️ 投了</button>
       </div>
-
-      <div class="divine-vs-player player-white" id="player-white-info">
-        <div class="divine-portrait-wrapper">
-          <div class="divine-portrait" id="player-white-icon"></div>
-          <div class="divine-rarity" id="player-white-rarity">SSR</div>
-        </div>
-        <div class="divine-player-meta">
-          <span class="divine-player-name" id="player-white-name">Opponent</span>
-          <div class="divine-stone-badge"><span id="player-white-stones">2</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="game-message" id="game-message"></div>
-    <div class="board-container" id="board-container">
-      <canvas id="game-canvas"></canvas>
-    </div>
-    <div class="game-controls">
-      <button class="btn-skill" id="btn-skill" disabled>
-        <span class="skill-icon" id="skill-icon">⚡</span>
-        <span class="skill-name" id="skill-name-display">スキル</span>
-      </button>
-      <button class="btn-secondary" id="btn-surrender">🏳️ 投了</button>
     </div>
   `;
 
@@ -76,9 +76,19 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   const leaderChar = CHARACTERS[leaderId];
   const leaderUncap = data.characters[leaderId].uncapLevel;
 
-  // 対戦相手キャラ（AI用：ランダム選択）
-  const opponentIds = Object.keys(CHARACTERS).filter(id => id !== leaderId);
-  const opponentId = opponentIds[Math.floor(Math.random() * opponentIds.length)] as keyof typeof CHARACTERS;
+  // 対戦相手キャラ（AI用：難易度に応じたレア度選択）
+  let opponentId: keyof typeof CHARACTERS;
+  if (mode === 'ai') {
+    const targetRarity = aiLevel === 1 ? 'R' : aiLevel === 2 ? 'SR' : 'SSR';
+    const possibleOpponents = Object.keys(CHARACTERS).filter(id => CHARACTERS[id as keyof typeof CHARACTERS].rarity === targetRarity);
+    opponentId = (possibleOpponents.length > 0 
+      ? possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)] 
+      : Object.keys(CHARACTERS)[0]) as keyof typeof CHARACTERS;
+  } else {
+    // PVP/Online等は既存のランダムまたは相手の選択に従う（ここではAI以外は暫定的にランダム）
+    const opponentIds = Object.keys(CHARACTERS).filter(id => id !== leaderId);
+    opponentId = opponentIds[Math.floor(Math.random() * opponentIds.length)] as keyof typeof CHARACTERS;
+  }
   const opponentChar = CHARACTERS[opponentId];
 
   // GameManager初期化
