@@ -92,13 +92,6 @@ export function createHelpScreen(): HTMLElement {
           <li><strong>ホスト</strong>: 「対戦開始！」を押した側が先攻（黒）となります。</li>
         </ul>
       </div>
-
-      <div class="help-section">
-        <h2>👥 キャラクター一覧</h2>
-        <div class="help-char-list">
-          ${charListHtml}
-        </div>
-      </div>
     </div>
   `;
 

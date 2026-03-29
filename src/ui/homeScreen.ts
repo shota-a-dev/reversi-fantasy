@@ -19,8 +19,8 @@ export function createHomeScreen(): HTMLElement {
       </div>
       <div class="home-content">
         <div class="home-logo">
-          <h1 class="game-title">盤上のファンタジア</h1>
-          <p class="game-subtitle">- Skill Reversi -</p>
+          <h1 class="game-title">神々の対局</h1>
+          <p class="game-subtitle">- Divine Reversi -</p>
           <div class="game-version">${__APP_VERSION__}</div>
         </div>
 
@@ -55,11 +55,11 @@ export function createHomeScreen(): HTMLElement {
           <div class="menu-row">
             <button class="menu-btn menu-btn-divine" id="btn-formation">
               <span class="menu-icon">👥</span>
-              <span class="menu-text">キャラクター</span>
+              <span class="menu-text">神格</span>
             </button>
             <button class="menu-btn menu-btn-divine" id="btn-gacha">
               <span class="menu-icon">🎰</span>
-              <span class="menu-text">ガチャ</span>
+              <span class="menu-text">神託</span>
             </button>
           </div>
 

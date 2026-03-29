@@ -13,8 +13,8 @@ const CELL_COLORS = {
 };
 
 const STONE_COLORS: Record<number, { fill: string; stroke: string; highlight: string }> = {
-  [BLACK]: { fill: '#0a0a0a', stroke: '#444444', highlight: '#666666' }, // Darker Black with more contrast
-  [WHITE]: { fill: '#ffffff', stroke: '#bbbbbb', highlight: '#ffffff' }, // Pure White
+  [BLACK]: { fill: '#0a0a0a', stroke: '#333333', highlight: '#555555' }, // Obsidian
+  [WHITE]: { fill: '#ffffff', stroke: '#dddddd', highlight: '#ffffff' }, // Pearl
 };
 
 interface AnimatingStone {
@@ -34,13 +34,14 @@ interface ParticleEffect {
   maxLife: number;
   color: string;
   size: number;
+  type?: string;
 }
 
 interface SkillAnimation {
   cells: [number, number][];
   progress: number;
   color: string;
-  type: 'flash' | 'ripple' | 'burn';
+  type: 'flash' | 'ripple' | 'burn' | 'lightning' | 'void' | 'divine';
 }
 
 export class BoardRenderer {
@@ -344,22 +345,26 @@ export class BoardRenderer {
   }
 
   // スキルアニメーション
-  startSkillAnimation(cells: [number, number][], color: string, type: 'flash' | 'ripple' | 'burn' = 'flash'): void {
+  startSkillAnimation(cells: [number, number][], color: string, type: 'flash' | 'ripple' | 'burn' | 'lightning' | 'void' | 'divine' = 'flash'): void {
     this.skillAnimation = { cells, progress: 0, color, type };
-    this.shakeAmount = 15;
+    this.shakeAmount = type === 'lightning' || type === 'void' ? 25 : 15;
+    
     for (const [r, c] of cells) {
       const cx = this.boardOffset.x + c * this.cellSize + this.cellSize / 2;
       const cy = this.boardOffset.y + r * this.cellSize + this.cellSize / 2;
-      for (let i = 0; i < 20; i++) {
+      const count = type === 'lightning' ? 30 : 20;
+      
+      for (let i = 0; i < count; i++) {
         this.particles.push({
           x: cx,
           y: cy,
-          vx: (Math.random() - 0.5) * 10,
-          vy: (Math.random() - 0.5) * 10,
+          vx: (Math.random() - 0.5) * (type === 'lightning' ? 15 : 10),
+          vy: (Math.random() - 0.5) * (type === 'lightning' ? 15 : 10),
           life: 1,
           maxLife: 1,
-          color: color,
+          color: type === 'lightning' ? '#fff' : color,
           size: 2 + Math.random() * 5,
+          type
         });
       }
     }
@@ -378,20 +383,36 @@ export class BoardRenderer {
       const y = off.y + r * cellSize;
 
       switch (anim.type) {
-        case 'flash': {
-          const alpha = Math.sin(p * Math.PI) * 0.8;
-          ctx.fillStyle = `${anim.color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
-          ctx.fillRect(x, y, cellSize, cellSize);
+        case 'lightning': {
+          // ゼウスの雷霆
+          if (p < 0.5 && Math.random() < 0.3) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillRect(x, y, cellSize, cellSize);
+          }
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(x + cellSize/2, y);
+          ctx.lineTo(x + cellSize/2 + (Math.random()-0.5)*20, y + cellSize);
+          ctx.stroke();
           break;
         }
-        case 'ripple': {
-          const radius = p * cellSize;
-          const alpha = (1 - p) * 0.6;
-          ctx.strokeStyle = `${anim.color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
-          ctx.lineWidth = 2;
+        case 'void': {
+          // ハデスの冥府
+          const alpha = Math.sin(p * Math.PI) * 0.9;
+          ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
           ctx.beginPath();
-          ctx.arc(x + cellSize / 2, y + cellSize / 2, radius, 0, Math.PI * 2);
-          ctx.stroke();
+          ctx.arc(x + cellSize / 2, y + cellSize / 2, (cellSize / 2) * (1 + p), 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        }
+        case 'divine': {
+          // アテナの啓示
+          const alpha = (1 - p) * 0.8;
+          ctx.fillStyle = `rgba(255, 255, 200, ${alpha})`;
+          ctx.fillRect(x, y, cellSize, cellSize);
+          ctx.strokeStyle = '#fff';
+          ctx.strokeRect(x + 4, y + 4, cellSize - 8, cellSize - 8);
           break;
         }
         case 'burn': {
@@ -406,6 +427,11 @@ export class BoardRenderer {
           ctx.fillStyle = gradient;
           ctx.fillRect(x, y, cellSize, cellSize);
           break;
+        }
+        default: {
+          const alpha = Math.sin(p * Math.PI) * 0.8;
+          ctx.fillStyle = `${anim.color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
+          ctx.fillRect(x, y, cellSize, cellSize);
         }
       }
     }
@@ -440,7 +466,14 @@ export class BoardRenderer {
       const p = this.particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.05; // gravity
+      
+      if (p.type === 'lightning') {
+        p.vx += (Math.random()-0.5)*2;
+        p.vy += (Math.random()-0.5)*2;
+      } else {
+        p.vy += 0.05; // gravity
+      }
+      
       p.life -= 0.02;
 
       if (p.life <= 0) {
@@ -450,9 +483,16 @@ export class BoardRenderer {
 
       ctx.globalAlpha = p.life;
       ctx.fillStyle = p.color;
+      
+      if (p.type === 'lightning') {
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'white';
+      }
+      
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
       ctx.fill();
+      ctx.shadowBlur = 0;
     }
 
     ctx.globalAlpha = 1;

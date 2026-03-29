@@ -40,7 +40,7 @@ export function createGachaScreen(): HTMLElement {
       <div class="gacha-bg-overlay"></div>
       <div class="screen-header">
         <button class="btn-back" id="gacha-back">← 戻る</button>
-        <h1 class="screen-title">ガチャ</h1>
+        <h1 class="screen-title">神託</h1>
         <div class="currency-badge">💰 ${data.currency} 💎</div>
       </div>
       <div class="gacha-content">

@@ -57,7 +57,7 @@ export function createGameScreen(): HTMLElement {
       <div class="game-controls">
         <button class="btn-skill" id="btn-skill" disabled>
           <span class="skill-icon" id="skill-icon">⚡</span>
-          <span class="skill-name" id="skill-name-display">スキル</span>
+          <span class="skill-name" id="skill-name-display">権能</span>
         </button>
         <button class="btn-secondary" id="btn-surrender">🏳️ 投了</button>
       </div>
@@ -166,7 +166,14 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
 
   gameManager.on('skillActivated', (evData) => {
     const result = evData as { affectedCells: [number, number][]; message: string };
-    renderer?.startSkillAnimation(result.affectedCells, leaderChar.color, 'burn');
+    
+    // 神格に応じたエフェクトタイプの決定
+    let effectType: 'lightning' | 'void' | 'divine' | 'burn' = 'burn';
+    if (leaderId === 'alfred') effectType = 'lightning'; // ゼウス
+    else if (leaderId === 'luna') effectType = 'void';   // ハデス
+    else if (leaderId === 'mira') effectType = 'divine'; // アテナ
+    
+    renderer?.startSkillAnimation(result.affectedCells, leaderChar.color, effectType);
     showMessage(result.message);
   });
 

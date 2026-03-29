@@ -3,14 +3,14 @@ import type { Board, CellState } from './constants';
 import { BOARD_SIZE, EMPTY } from './constants';
 import { getValidMoves, flipStone, forceSetStone, cloneBoard, countStones } from './board';
 
-// ─── キャラクターデータ型 ─────
+// ─── 神格データ型 ─────
 export interface CharacterData {
   id: CharacterId;
   name: string;
   title: string;
   rarity: 'SSR' | 'SR' | 'R';
-  color: string;         // テーマカラー
-  icon: string;          // Emoji代用
+  color: string;         // 神格のオーラカラー
+  icon: string;          // 属性シンボル
   imageUrl?: string;
   activeSkill: ActiveSkill;
   passiveSkill: PassiveSkill;
@@ -58,24 +58,23 @@ export interface SkillResult {
   bonusScore?: number;
 }
 
-// ─── キャラクター定義 ─────
+// ─── 神格定義 ─────
 export const CHARACTERS: Record<CharacterId, CharacterData> = {
   alfred: {
     id: 'alfred',
-    name: 'アルフレッド',
-    title: '聖騎士',
+    name: 'ゼウス',
+    title: '全知全能の雷神',
     rarity: 'SSR',
-    color: '#FFD700',
-    icon: '⚔️',
-    imageUrl: 'assets/characters/alfred.png',
+    color: '#F1C40F',
+    icon: '⚡',
+    imageUrl: 'assets/characters/zeus.png',
     activeSkill: {
-      name: '聖なる裁き',
-      description: '十字方向（縦横1列）の敵石を全て自分の色に反転する',
+      name: 'ケラウノスの雷霆',
+      description: '十字方向にある相手の石を全て自分の石に変える。',
       execute: (ctx: SkillContext): SkillResult => {
         const board = cloneBoard(ctx.board);
         const affected: [number, number][] = [];
         const mid = Math.floor(BOARD_SIZE / 2);
-        // 中央十字を反転
         for (let i = 0; i < BOARD_SIZE; i++) {
           if (board[mid][i] === ctx.opponentPlayer) {
             board[mid][i] = ctx.currentPlayer;
@@ -88,39 +87,39 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
         }
         return {
           board,
-          message: 'アルフレッドの聖なる裁き！十字方向の石を反転！',
+          message: 'ゼウスの神雷！ケラウノスが盤面を貫く！',
           affectedCells: affected,
         };
       },
     },
     passiveSkill: {
-      name: '騎士の誇り',
-      description: '自分のターン開始時、残り時間が3秒回復',
+      name: '至高の権威',
+      description: '自分のターン開始時、思考時間が回復する。',
       trigger: 'onTurnStart',
       effect: (ctx: SkillContext, uncapLevel: number) => {
         ctx.timeBonus += 3 + uncapLevel;
       },
     },
     uncapBonuses: [
-      { level: 1, description: 'パッシブの回復時間+1秒', stat: 'passiveEnhance', value: 1 },
-      { level: 2, description: 'スコア倍率+5%', stat: 'scoreMultiplier', value: 0.05 },
-      { level: 3, description: 'パッシブの回復時間+2秒', stat: 'passiveEnhance', value: 2 },
-      { level: 4, description: 'スコア倍率+10%', stat: 'scoreMultiplier', value: 0.1 },
-      { level: 5, description: '聖なる裁きがX字方向にも追加発動', stat: 'activeEnhance', value: 1 },
+      { level: 1, description: '権威の格：回復時間+1秒', stat: 'passiveEnhance', value: 1 },
+      { level: 2, description: '黄金の導き：獲得スコア+5%', stat: 'scoreMultiplier', value: 0.05 },
+      { level: 3, description: '権威の格：回復時間+2秒', stat: 'passiveEnhance', value: 2 },
+      { level: 4, description: '黄金の導き：獲得スコア+10%', stat: 'scoreMultiplier', value: 0.1 },
+      { level: 5, description: '神雷の覚醒：効果範囲が拡大する', stat: 'activeEnhance', value: 1 },
     ],
   },
 
   luna: {
     id: 'luna',
-    name: 'ルナ',
-    title: '月影の魔女',
+    name: 'ハデス',
+    title: '冥府を統べる王',
     rarity: 'SSR',
-    color: '#9B59B6',
-    icon: '🌙',
-    imageUrl: 'assets/characters/luna.png',
+    color: '#8E44AD',
+    icon: '💀',
+    imageUrl: 'assets/characters/hades.png',
     activeSkill: {
-      name: '月蝕の帳',
-      description: '四隅のいずれか1つに自分の石を強制配置する',
+      name: '隠れ兜の権能',
+      description: '盤面の四隅（コーナー）のいずれかを強制的に自分の石にする。',
       execute: (ctx: SkillContext): SkillResult => {
         const board = cloneBoard(ctx.board);
         const corners: [number, number][] = [
@@ -128,7 +127,6 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
           [BOARD_SIZE - 1, 0], [BOARD_SIZE - 1, BOARD_SIZE - 1],
         ];
         const affected: [number, number][] = [];
-        // 空いている隅から1つ選んで自分の石を置く
         for (const [r, c] of corners) {
           if (board[r][c] === EMPTY) {
             forceSetStone(board, r, c, ctx.currentPlayer);
@@ -137,7 +135,6 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
           }
         }
         if (affected.length === 0) {
-          // 隅が全部埋まっている場合、敵の隅を奪う
           for (const [r, c] of corners) {
             if (board[r][c] === ctx.opponentPlayer) {
               board[r][c] = ctx.currentPlayer;
@@ -148,43 +145,40 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
         }
         return {
           board,
-          message: 'ルナの月蝕の帳！角を制圧！',
+          message: 'ハデスの権能！隠れ兜が隅の支配を確定させる！',
           affectedCells: affected,
         };
       },
     },
     passiveSkill: {
-      name: '月光の加護',
-      description: '相手のスキル発動時、その効果を半減する',
+      name: '冥府の戒律',
+      description: '相手がスキルを使用した際、その影響を軽減する。',
       trigger: 'onTurnEnd',
-      effect: (_ctx: SkillContext, _uncapLevel: number) => {
-        // 相手スキル半減は GameManager 側で処理
-      },
+      effect: (_ctx: SkillContext, _uncapLevel: number) => {},
     },
     uncapBonuses: [
-      { level: 1, description: '時間ボーナス+2秒', stat: 'timeBonus', value: 2 },
-      { level: 2, description: 'スコア倍率+5%', stat: 'scoreMultiplier', value: 0.05 },
-      { level: 3, description: '時間ボーナス+3秒', stat: 'timeBonus', value: 3 },
-      { level: 4, description: 'スコア倍率+10%', stat: 'scoreMultiplier', value: 0.1 },
-      { level: 5, description: '月蝕の帳で2つの角を制圧', stat: 'activeEnhance', value: 1 },
+      { level: 1, description: '常闇の猶予：時間ボーナス+2秒', stat: 'timeBonus', value: 2 },
+      { level: 2, description: '魂の収穫：獲得スコア+5%', stat: 'scoreMultiplier', value: 0.05 },
+      { level: 3, description: '常闇の猶予：時間ボーナス+3秒', stat: 'timeBonus', value: 3 },
+      { level: 4, description: '魂の収穫：獲得スコア+10%', stat: 'scoreMultiplier', value: 0.1 },
+      { level: 5, description: '冥王の覚醒：一度に2つの隅を支配する', stat: 'activeEnhance', value: 1 },
     ],
   },
 
   drake: {
     id: 'drake',
-    name: 'ドレイク',
-    title: '紅蓮の竜騎士',
+    name: 'アレス',
+    title: '戦場を駆ける荒神',
     rarity: 'SR',
-    color: '#E74C3C',
-    icon: '🐉',
-    imageUrl: 'assets/characters/drake.png',
+    color: '#C0392B',
+    icon: '🔥',
+    imageUrl: 'assets/characters/ares.png',
     activeSkill: {
-      name: '竜炎の息吹',
-      description: 'ランダムな3×3エリアの石を全て自分の色に変える',
+      name: 'ゴッド・オブ・ウォー',
+      description: 'ランダムな3×3マスの範囲にある相手の石を全て自分の石に変える。',
       execute: (ctx: SkillContext): SkillResult => {
         const board = cloneBoard(ctx.board);
         const affected: [number, number][] = [];
-        // ランダムな開始位置
         const sr = Math.floor(Math.random() * (BOARD_SIZE - 2));
         const sc = Math.floor(Math.random() * (BOARD_SIZE - 2));
         for (let r = sr; r < sr + 3; r++) {
@@ -197,130 +191,124 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
         }
         return {
           board,
-          message: `ドレイクの竜炎の息吹！[${sr},${sc}]エリアを焼き尽くす！`,
+          message: `アレスの咆哮！戦火が盤面を焼き払う！`,
           affectedCells: affected,
         };
       },
     },
     passiveSkill: {
-      name: '竜鱗の守り',
-      description: '石をひっくり返した時、追加で隣接1マスを自分の色にする',
+      name: '軍神の闘気',
+      description: '石を裏返すたび、獲得スコア倍率が上昇する。',
       trigger: 'onFlip',
       effect: (ctx: SkillContext, uncapLevel: number) => {
-        // GameManager側で実装: flip時に隣接マスを追加反転
         ctx.scoreMultiplier += 0.02 * uncapLevel;
       },
     },
     uncapBonuses: [
-      { level: 1, description: 'パッシブ強化：追加反転数+1', stat: 'passiveEnhance', value: 1 },
-      { level: 2, description: 'スコア倍率+5%', stat: 'scoreMultiplier', value: 0.05 },
-      { level: 3, description: '竜炎エリアが4×4に拡大', stat: 'activeEnhance', value: 1 },
-      { level: 4, description: '時間ボーナス+3秒', stat: 'timeBonus', value: 3 },
-      { level: 5, description: 'スコア倍率+15%', stat: 'scoreMultiplier', value: 0.15 },
+      { level: 1, description: '闘気の高揚：倍率上昇量アップ', stat: 'passiveEnhance', value: 1 },
+      { level: 2, description: '勝利の凱歌：獲得スコア+5%', stat: 'scoreMultiplier', value: 0.05 },
+      { level: 3, description: '戦火の拡大：攻撃エリアが4×4に増加', stat: 'activeEnhance', value: 1 },
+      { level: 4, description: '戦士の休息：時間ボーナス+3秒', stat: 'timeBonus', value: 3 },
+      { level: 5, description: '軍神の覚醒：獲得スコア+15%', stat: 'scoreMultiplier', value: 0.15 },
     ],
   },
 
   mira: {
     id: 'mira',
-    name: 'ミラ',
-    title: '星詠みの賢者',
+    name: 'アテナ',
+    title: '勝利と知恵の女神',
     rarity: 'SR',
-    color: '#3498DB',
-    icon: '⭐',
-    imageUrl: 'assets/characters/mira.png',
+    color: '#2980B9',
+    icon: '🛡️',
+    imageUrl: 'assets/characters/athena.png',
     activeSkill: {
-      name: '星座の導き',
-      description: '次の3手先まで相手の最善手を表示する（実際はAI示唆）',
+      name: 'アイギスの啓示',
+      description: '相手の次の合法手を最大3手までハイライト表示する。',
       execute: (ctx: SkillContext): SkillResult => {
-        // 盤面は変更せず、情報スキルとして機能
         const moves = getValidMoves(ctx.board, ctx.opponentPlayer);
         const previewMoves = moves.slice(0, Math.min(3, moves.length));
         return {
           board: cloneBoard(ctx.board),
-          message: `ミラの星座の導き！相手の候補手を${previewMoves.length}箇所表示！`,
+          message: `アテナの啓示！アイギスが未来の攻防を映し出す！`,
           affectedCells: previewMoves,
         };
       },
     },
     passiveSkill: {
-      name: '星明りの知恵',
-      description: 'ゲーム開始時に制限時間をボーナスで延長',
+      name: '神託の知略',
+      description: '対局開始時、制限時間が延長される。',
       trigger: 'onGameStart',
       effect: (ctx: SkillContext, uncapLevel: number) => {
         ctx.timeBonus += 5 + uncapLevel * 2;
       },
     },
     uncapBonuses: [
-      { level: 1, description: '開始時の時間ボーナス+3秒', stat: 'timeBonus', value: 3 },
-      { level: 2, description: 'スコア倍率+5%', stat: 'scoreMultiplier', value: 0.05 },
-      { level: 3, description: '表示手数が5手に増加', stat: 'activeEnhance', value: 1 },
-      { level: 4, description: '時間ボーナス+5秒', stat: 'timeBonus', value: 5 },
-      { level: 5, description: 'スコア倍率+10%', stat: 'scoreMultiplier', value: 0.1 },
+      { level: 1, description: '知略の深み：開始時間+3秒', stat: 'timeBonus', value: 3 },
+      { level: 2, description: '神殿の恵み：獲得スコア+5%', stat: 'scoreMultiplier', value: 0.05 },
+      { level: 3, description: '啓示の拡大：予見できる手数が5手に増加', stat: 'activeEnhance', value: 1 },
+      { level: 4, description: '知略の深み：開始時間+5秒', stat: 'timeBonus', value: 5 },
+      { level: 5, description: '知恵の覚醒：獲得スコア+10%', stat: 'scoreMultiplier', value: 0.1 },
     ],
   },
 
   zephyr: {
     id: 'zephyr',
-    name: 'ゼフィル',
-    title: '風来の盗賊',
+    name: 'ヘルメス',
+    title: '神々の伝令使',
     rarity: 'R',
-    color: '#2ECC71',
-    icon: '💨',
-    imageUrl: 'assets/characters/zephyr.png',
+    color: '#27AE60',
+    icon: '🕊️',
+    imageUrl: 'assets/characters/hermes.png',
     activeSkill: {
-      name: '疾風怒濤',
-      description: '盤面の外周1列の敵石を全てひっくり返す',
+      name: '神速のタラリア',
+      description: '盤面の外周（一番外側の列）にある相手の石を全て自分の石に変える。',
       execute: (ctx: SkillContext): SkillResult => {
         const board = cloneBoard(ctx.board);
         const affected: [number, number][] = [];
         for (let i = 0; i < BOARD_SIZE; i++) {
-          // 上辺
           if (board[0][i] === ctx.opponentPlayer) { flipStone(board, 0, i); affected.push([0, i]); }
-          // 下辺
           if (board[BOARD_SIZE-1][i] === ctx.opponentPlayer) { flipStone(board, BOARD_SIZE-1, i); affected.push([BOARD_SIZE-1, i]); }
-          // 左辺
           if (board[i][0] === ctx.opponentPlayer) { flipStone(board, i, 0); affected.push([i, 0]); }
-          // 右辺
           if (board[i][BOARD_SIZE-1] === ctx.opponentPlayer) { flipStone(board, i, BOARD_SIZE-1); affected.push([i, BOARD_SIZE-1]); }
         }
         return {
           board,
-          message: 'ゼフィルの疾風怒濤！外周の石を反転！',
+          message: 'ヘルメスの神速！盤面の外周を瞬く間に制圧！',
           affectedCells: affected,
         };
       },
     },
     passiveSkill: {
-      name: '風読み',
-      description: 'ターン終了時、相手の思考時間を1秒短縮',
+      name: '風の便り',
+      description: '自分のターン終了時、相手の思考時間を短縮させる。',
       trigger: 'onTurnEnd',
       effect: (ctx: SkillContext, uncapLevel: number) => {
         ctx.timeBonus -= (1 + Math.floor(uncapLevel / 2));
       },
     },
     uncapBonuses: [
-      { level: 1, description: '相手の時間短縮+1秒', stat: 'passiveEnhance', value: 1 },
-      { level: 2, description: 'スコア倍率+3%', stat: 'scoreMultiplier', value: 0.03 },
-      { level: 3, description: '外周反転が内周1列にも拡大', stat: 'activeEnhance', value: 1 },
-      { level: 4, description: '時間ボーナス+2秒', stat: 'timeBonus', value: 2 },
-      { level: 5, description: 'スコア倍率+10%', stat: 'scoreMultiplier', value: 0.1 },
+      { level: 1, description: '追い風：相手の短縮時間+1秒', stat: 'passiveEnhance', value: 1 },
+      { level: 2, description: '旅の収穫：獲得スコア+3%', stat: 'scoreMultiplier', value: 0.03 },
+      { level: 3, description: '突風：反転エリアが内周にも波及', stat: 'activeEnhance', value: 1 },
+      { level: 4, description: '伝令の休息：時間ボーナス+2秒', stat: 'timeBonus', value: 2 },
+      { level: 5, description: '伝令の覚醒：獲得スコア+10%', stat: 'scoreMultiplier', value: 0.1 },
     ],
   },
 
   noir: {
     id: 'noir',
-    name: 'ノワール',
-    title: '闇夜の暗殺者',
+    name: 'アルテミス',
+    title: '純潔なる月の女神',
     rarity: 'R',
-    color: '#8E44AD',
-    icon: '🗡️',
+    color: '#34495E',
+    icon: '🏹',
+    imageUrl: 'assets/characters/artemis.png',
     activeSkill: {
-      name: '影縫い',
-      description: '相手の最も石が多い行を1行完全にリセット（空にする）',
+      name: '月光の狙撃',
+      description: '相手の石が最も多い一列（行）を、全て空きマスに戻す。',
       execute: (ctx: SkillContext): SkillResult => {
         const board = cloneBoard(ctx.board);
         const affected: [number, number][] = [];
-        // 相手の石が最も多い行を探す
         let maxRow = 0;
         let maxCount = 0;
         for (let r = 0; r < BOARD_SIZE; r++) {
@@ -333,7 +321,6 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
             maxRow = r;
           }
         }
-        // その行を空にする
         for (let c = 0; c < BOARD_SIZE; c++) {
           if (board[maxRow][c] !== EMPTY) {
             affected.push([maxRow, c]);
@@ -342,14 +329,14 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
         }
         return {
           board,
-          message: `ノワールの影縫い！第${maxRow + 1}行を消去！`,
+          message: `アルテミスの銀矢！第${maxRow + 1}行を静寂が包む！`,
           affectedCells: affected,
         };
       },
     },
     passiveSkill: {
-      name: '暗殺術',
-      description: 'ゲーム終了時、スコアに石差×2のボーナスを加算',
+      name: '狩猟の掟',
+      description: '対局終了時、相手との石の差に応じたボーナススコアを獲得する。',
       trigger: 'onGameEnd',
       effect: (ctx: SkillContext, uncapLevel: number) => {
         const { black, white } = countStones(ctx.board);
@@ -358,11 +345,11 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
       },
     },
     uncapBonuses: [
-      { level: 1, description: 'ボーナス倍率+50%', stat: 'passiveEnhance', value: 0.5 },
-      { level: 2, description: 'スコア倍率+5%', stat: 'scoreMultiplier', value: 0.05 },
-      { level: 3, description: '影縫いが2行に拡大', stat: 'activeEnhance', value: 1 },
-      { level: 4, description: '時間ボーナス+2秒', stat: 'timeBonus', value: 2 },
-      { level: 5, description: 'スコア倍率+15%', stat: 'scoreMultiplier', value: 0.15 },
+      { level: 1, description: '狙撃の精度：ボーナス倍率上昇', stat: 'passiveEnhance', value: 0.5 },
+      { level: 2, description: '月の加護：獲得スコア+5%', stat: 'scoreMultiplier', value: 0.05 },
+      { level: 3, description: '双子矢：狙撃エリアが2行に拡大', stat: 'activeEnhance', value: 1 },
+      { level: 4, description: '狩人の休息：時間ボーナス+2秒', stat: 'timeBonus', value: 2 },
+      { level: 5, description: '月の覚醒：獲得スコア+15%', stat: 'scoreMultiplier', value: 0.15 },
     ],
   },
 };
