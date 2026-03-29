@@ -72,7 +72,7 @@ export function createFormationScreen(): HTMLElement {
     const content = screen.querySelector('#detail-modal-content') as HTMLElement;
     if (!modal || !content) return;
 
-    const char = CHARACTERS[id];
+    // const char = CHARACTERS[id];
     const data = store.getData();
     const isLeader = id === data.selectedLeader;
 

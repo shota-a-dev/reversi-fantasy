@@ -1,6 +1,6 @@
 import { screenManager } from './screenManager';
-import { CHARACTERS } from '../core/characters';
-import { CHARACTER_IDS } from '../core/constants';
+// import { CHARACTERS } from '../core/characters';
+// import { CHARACTER_IDS } from '../core/constants';
 
 export function createHelpScreen(): HTMLElement {
   const screen = document.createElement('div');
@@ -8,24 +8,24 @@ export function createHelpScreen(): HTMLElement {
   screen.className = 'screen screen-scrollable';
   screen.style.display = 'none';
 
-  const charListHtml = CHARACTER_IDS.map(id => {
-    const char = CHARACTERS[id];
-    const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
-    const iconStyle = char.imageUrl ? `background-image: url(${imgUrl});` : `background-color: ${char.color}44; border: 1px solid ${char.color};`;
-    const iconClass = `help-char-icon ${char.imageUrl ? 'has-image' : ''}`;
+  // const charListHtml = CHARACTER_IDS.map(id => {
+  //   const char = CHARACTERS[id];
+  //   const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
+  //   const iconStyle = char.imageUrl ? `background-image: url(${imgUrl});` : `background-color: ${char.color}44; border: 1px solid ${char.color};`;
+  //   const iconClass = `help-char-icon ${char.imageUrl ? 'has-image' : ''}`;
     
-    return `
-      <div class="help-char">
-        <div class="${iconClass}" style="${iconStyle}">
-          ${char.imageUrl ? '' : char.icon}
-        </div>
-        <div>
-          <strong>${char.name}（${char.rarity}）</strong>
-          <p>${char.activeSkill.description}</p>
-        </div>
-      </div>
-    `;
-  }).join('');
+  //   return `
+  //     <div class="help-char">
+  //       <div class="${iconClass}" style="${iconStyle}">
+  //         ${char.imageUrl ? '' : char.icon}
+  //       </div>
+  //       <div>
+  //         <strong>${char.name}（${char.rarity}）</strong>
+  //         <p>${char.activeSkill.description}</p>
+  //       </div>
+  //     </div>
+  //   `;
+  // }).join('');
 
   screen.innerHTML = `
     <div class="screen-header">
