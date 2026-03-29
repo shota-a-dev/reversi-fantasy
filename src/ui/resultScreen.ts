@@ -22,7 +22,9 @@ export function showResultScreen(
 
   const isWin = winner === BLACK;
   const isDraw = winner === EMPTY;
-  const reward = isWin ? 100 : isDraw ? 50 : 20;
+  const aiDifficulty = store.getSettings().aiDifficulty;
+  const baseReward = isWin ? 100 : isDraw ? 50 : 20;
+  const reward = Math.floor(baseReward * (aiDifficulty * 0.5 + 0.5));
   const data = store.getData();
 
   screen.innerHTML = `

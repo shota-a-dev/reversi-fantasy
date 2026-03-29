@@ -37,33 +37,35 @@ export function createGachaScreen(): HTMLElement {
     const data = store.getData();
 
     screen.innerHTML = `
+      <div class="gacha-bg-overlay"></div>
       <div class="screen-header">
         <button class="btn-back" id="gacha-back">← 戻る</button>
-        <h1 class="screen-title">ガチャ</h1>
-        <div class="currency-display">💎 ${data.currency}</div>
+        <h1 class="screen-title">精霊召喚</h1>
+        <div class="currency-badge">💎 ${data.currency}</div>
       </div>
       <div class="gacha-content">
-        <div class="gacha-machine">
-          <div class="gacha-orb" id="gacha-orb">
-            <div class="gacha-orb-inner">✨</div>
+        <div class="gacha-machine-container">
+          <div class="gacha-machine">
+            <div class="gacha-orb" id="gacha-orb">
+              <div class="gacha-orb-inner">🔮</div>
+            </div>
+            <div class="gacha-light-beam"></div>
           </div>
-          <div class="gacha-rates">
-            <span class="rate-ssr">SSR 3%</span>
-            <span class="rate-sr">SR 12%</span>
-            <span class="rate-r">R 85%</span>
+          <div class="gacha-rates-table">
+            <span class="rate-item ssr">SSR 3%</span>
+            <span class="rate-item sr">SR 12%</span>
+            <span class="rate-item r">R 85%</span>
           </div>
         </div>
         <div class="gacha-result" id="gacha-result" style="display: none;">
         </div>
         <div class="gacha-buttons">
           <button class="btn-gacha btn-single" id="btn-gacha-single" ${data.currency < GACHA_COST ? 'disabled' : ''}>
-            単発ガチャ<br><small>💎 ${GACHA_COST}</small>
+            単発召喚<br><small>💎 ${GACHA_COST}</small>
           </button>
           <button class="btn-gacha btn-ten" id="btn-gacha-ten" ${data.currency < GACHA_COST * 10 ? 'disabled' : ''}>
-            10連ガチャ<br><small>💎 ${GACHA_COST * 10}</small>
+            10連召喚<br><small>💎 ${GACHA_COST * 10}</small>
           </button>
-        </div>
-        <div class="gacha-history" id="gacha-history">
         </div>
       </div>
     `;
@@ -120,7 +122,10 @@ export function createGachaScreen(): HTMLElement {
                 <div class="gacha-result-card ${r.isNew ? 'new-char' : 'dupe-char'} rarity-${char.rarity.toLowerCase()}-bg"
                      style="animation-delay: ${results.indexOf(r) * 0.15}s">
                   <div class="result-rarity">${char.rarity}</div>
-                  <div class="result-icon">${char.icon}</div>
+                  <div class="result-icon ${char.imageUrl ? 'has-image' : ''}" 
+                       style="${char.imageUrl ? `background-image: url(${char.imageUrl})` : `background-color: ${char.color}44`}">
+                    ${char.imageUrl ? '' : char.icon}
+                  </div>
                   <div class="result-name">${char.name}</div>
                   <div class="result-status">
                     ${r.isNew ? '<span class="new-badge">NEW!</span>' : `<span class="dupe-badge">凸${r.uncapLevel}</span>`}
@@ -139,7 +144,7 @@ export function createGachaScreen(): HTMLElement {
       }
 
       // 通貨表示更新
-      const currencyDisplay = screen.querySelector('.currency-display');
+      const currencyDisplay = screen.querySelector('.currency-badge');
       if (currencyDisplay) {
         currencyDisplay.textContent = `💎 ${store.getCurrency()}`;
       }

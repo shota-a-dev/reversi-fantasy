@@ -11,6 +11,7 @@ export interface CharacterData {
   rarity: 'SSR' | 'SR' | 'R';
   color: string;         // テーマカラー
   icon: string;          // Emoji代用
+  imageUrl?: string;
   activeSkill: ActiveSkill;
   passiveSkill: PassiveSkill;
   uncapBonuses: UncapBonus[];
@@ -66,6 +67,7 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
     rarity: 'SSR',
     color: '#FFD700',
     icon: '⚔️',
+    imageUrl: 'assets/characters/alfred.png',
     activeSkill: {
       name: '聖なる裁き',
       description: '十字方向（縦横1列）の敵石を全て自分の色に反転する',
@@ -115,6 +117,7 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
     rarity: 'SSR',
     color: '#9B59B6',
     icon: '🌙',
+    imageUrl: 'assets/characters/luna.png',
     activeSkill: {
       name: '月蝕の帳',
       description: '四隅のいずれか1つに自分の石を強制配置する',
@@ -174,6 +177,7 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
     rarity: 'SR',
     color: '#E74C3C',
     icon: '🐉',
+    imageUrl: 'assets/characters/drake.png',
     activeSkill: {
       name: '竜炎の息吹',
       description: 'ランダムな3×3エリアの石を全て自分の色に変える',
@@ -223,6 +227,7 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
     rarity: 'SR',
     color: '#3498DB',
     icon: '⭐',
+    imageUrl: 'assets/characters/mira.png',
     activeSkill: {
       name: '星座の導き',
       description: '次の3手先まで相手の最善手を表示する（実際はAI示唆）',
@@ -261,6 +266,7 @@ export const CHARACTERS: Record<CharacterId, CharacterData> = {
     rarity: 'R',
     color: '#2ECC71',
     icon: '💨',
+    imageUrl: 'assets/characters/zephyr.png',
     activeSkill: {
       name: '疾風怒濤',
       description: '盤面の外周1列の敵石を全てひっくり返す',

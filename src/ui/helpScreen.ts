@@ -1,10 +1,30 @@
 import { screenManager } from './screenManager';
+import { CHARACTERS } from '../core/characters';
+import { CHARACTER_IDS } from '../core/constants';
 
 export function createHelpScreen(): HTMLElement {
   const screen = document.createElement('div');
   screen.id = 'screen-help';
   screen.className = 'screen';
   screen.style.display = 'none';
+
+  const charListHtml = CHARACTER_IDS.map(id => {
+    const char = CHARACTERS[id];
+    const iconStyle = char.imageUrl ? `background-image: url(${char.imageUrl});` : `background-color: ${char.color}44; border: 1px solid ${char.color};`;
+    const iconClass = `help-char-icon ${char.imageUrl ? 'has-image' : ''}`;
+    
+    return `
+      <div class="help-char">
+        <div class="${iconClass}" style="${iconStyle}">
+          ${char.imageUrl ? '' : char.icon}
+        </div>
+        <div>
+          <strong>${char.name}（${char.rarity}）</strong>
+          <p>${char.activeSkill.description}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
 
   screen.innerHTML = `
     <div class="screen-header">
@@ -65,48 +85,7 @@ export function createHelpScreen(): HTMLElement {
       <div class="help-section">
         <h2>👥 キャラクター一覧</h2>
         <div class="help-char-list">
-          <div class="help-char">
-            <span class="help-char-icon">⚔️</span>
-            <div>
-              <strong>アルフレッド（SSR）</strong>
-              <p>十字方向の敵石を全て反転する聖騎士</p>
-            </div>
-          </div>
-          <div class="help-char">
-            <span class="help-char-icon">🌙</span>
-            <div>
-              <strong>ルナ（SSR）</strong>
-              <p>四隅を制圧する月影の魔女</p>
-            </div>
-          </div>
-          <div class="help-char">
-            <span class="help-char-icon">🐉</span>
-            <div>
-              <strong>ドレイク（SR）</strong>
-              <p>3×3エリアを焼き尽くす竜騎士</p>
-            </div>
-          </div>
-          <div class="help-char">
-            <span class="help-char-icon">⭐</span>
-            <div>
-              <strong>ミラ（SR）</strong>
-              <p>相手の候補手を見抜く賢者</p>
-            </div>
-          </div>
-          <div class="help-char">
-            <span class="help-char-icon">💨</span>
-            <div>
-              <strong>ゼフィル（R）</strong>
-              <p>外周の石を反転する盗賊</p>
-            </div>
-          </div>
-          <div class="help-char">
-            <span class="help-char-icon">🗡️</span>
-            <div>
-              <strong>ノワール（R）</strong>
-              <p>敵石の多い行を消去する暗殺者</p>
-            </div>
-          </div>
+          ${charListHtml}
         </div>
       </div>
     </div>

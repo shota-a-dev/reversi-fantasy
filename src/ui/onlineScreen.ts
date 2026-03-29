@@ -14,18 +14,19 @@ export function createOnlineScreen(): HTMLElement {
     <div class="online-container">
       <h2 class="online-title">🌐 オンライン対戦</h2>
       
-      <div class="online-section" id="peer-id-section">
+      <div class="online-card" id="peer-id-section">
         <p>あなたのID:</p>
         <div class="id-display">
           <span id="my-peer-id">読込中...</span>
           <button class="btn-icon" id="btn-copy-id" title="コピー">📋</button>
         </div>
+        <p class="small-text">対戦相手にこのIDを伝えてください</p>
       </div>
 
-      <div class="online-section">
-        <p>相手のIDを入力して接続:</p>
+      <div class="online-card">
+        <p>対戦相手のIDで接続:</p>
         <div class="id-input-group">
-          <input type="text" id="target-peer-id" placeholder="相手のIDを入力">
+          <input type="text" id="target-peer-id" placeholder="IDを入力...">
           <button class="btn-primary" id="btn-connect">接続</button>
         </div>
       </div>
@@ -35,7 +36,10 @@ export function createOnlineScreen(): HTMLElement {
       </div>
 
       <div class="online-actions" id="online-actions" style="display: none;">
-        <button class="btn-primary btn-large" id="btn-start-online">対戦開始！</button>
+        <button class="btn-primary btn-large" id="btn-start-online">
+          <span class="btn-shine"></span>
+          対戦開始！
+        </button>
       </div>
 
       <button class="btn-secondary" id="btn-online-back">もどる</button>

@@ -21,10 +21,12 @@ export function createHomeScreen(): HTMLElement {
         <div class="home-logo">
           <h1 class="game-title">盤上のファンタジア</h1>
           <p class="game-subtitle">- Skill Reversi -</p>
+          <div class="game-version">v${__APP_VERSION__}</div>
         </div>
 
         <div class="home-leader-display">
-          <div class="home-leader-icon" style="background: linear-gradient(135deg, ${leader.color}66, ${leader.color})">
+          <div class="home-leader-icon ${leader.imageUrl ? 'has-image' : ''}" 
+               style="background: ${leader.imageUrl ? `url(${leader.imageUrl})` : `linear-gradient(135deg, ${leader.color}66, ${leader.color})`}">
             ${leader.icon}
           </div>
           <div class="home-leader-info">
@@ -34,8 +36,8 @@ export function createHomeScreen(): HTMLElement {
         </div>
 
         <div class="home-stats">
-          <div class="stat-badge">💎 ${data.currency}</div>
-          <div class="stat-badge">🏆 ${data.totalWins}/${data.totalGames}</div>
+          <div class="stat-badge clickable" id="stat-currency">💎 ${data.currency}</div>
+          <div class="stat-badge clickable" id="stat-trophy">🏆 ${data.totalWins}/${data.totalGames}</div>
         </div>
 
         <div class="home-menu">
@@ -73,13 +75,29 @@ export function createHomeScreen(): HTMLElement {
           </div>
         </div>
 
-        <div class="home-difficulty" id="difficulty-selector">
-          <label>AI難易度:</label>
-          <div class="difficulty-buttons">
-            <button class="diff-btn ${data.settings.aiDifficulty === 1 ? 'active' : ''}" data-level="1">初級</button>
-            <button class="diff-btn ${data.settings.aiDifficulty === 2 ? 'active' : ''}" data-level="2">中級</button>
-            <button class="diff-btn ${data.settings.aiDifficulty === 3 ? 'active' : ''}" data-level="3">上級</button>
+        </div>
+      </div>
+
+      <!-- 難易度選択モーダル -->
+      <div class="modal-overlay" id="difficulty-modal" style="display: none;">
+        <div class="modal-content difficulty-modal-content">
+          <h2>⚔️ AI対戦 - 難易度選択</h2>
+          <p>挑戦するレベルを選んでください</p>
+          <div class="difficulty-options">
+            <button class="menu-btn diff-select-btn" data-level="1">
+              <span class="diff-title">初級</span>
+              <span class="diff-desc">初めての方にオススメ</span>
+            </button>
+            <button class="menu-btn diff-select-btn" data-level="2">
+              <span class="diff-title">中級</span>
+              <span class="diff-desc">標準的なAIと勝負</span>
+            </button>
+            <button class="menu-btn diff-select-btn" data-level="3">
+              <span class="diff-title">上級</span>
+              <span class="diff-desc">最強のAIに挑戦！(報酬アップ)</span>
+            </button>
           </div>
+          <button class="btn-secondary modal-close" id="difficulty-close">戻る</button>
         </div>
       </div>
 
@@ -101,13 +119,22 @@ export function createHomeScreen(): HTMLElement {
           <button class="btn-secondary modal-close" id="settings-close">閉じる</button>
         </div>
       </div>
+
+      <!-- 解説モーダル -->
+      <div class="modal-overlay" id="info-modal" style="display: none;">
+        <div class="modal-content info-modal-content">
+          <h2 id="info-title">解説</h2>
+          <div class="info-body" id="info-body"></div>
+          <button class="btn-secondary modal-close" id="info-close">閉じる</button>
+        </div>
+      </div>
     `;
 
     // イベント
     screen.querySelector('#btn-ai-battle')?.addEventListener('click', () => {
       audioManager.init();
-      screenManager.navigate('game');
-      setTimeout(() => startGame('ai', data.settings.aiDifficulty), 100);
+      const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
+      if (modal) modal.style.display = 'flex';
     });
 
     screen.querySelector('#btn-online-battle')?.addEventListener('click', () => {
@@ -132,14 +159,48 @@ export function createHomeScreen(): HTMLElement {
       screenManager.navigate('help');
     });
 
-    // 難易度選択
-    screen.querySelectorAll('.diff-btn').forEach(btn => {
+    // 難易度選択モーダル
+    screen.querySelectorAll('.diff-select-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const level = parseInt(btn.getAttribute('data-level') || '2');
         store.updateSettings({ aiDifficulty: level });
-        screen.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        
+        const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
+        if (modal) modal.style.display = 'none';
+
+        screenManager.navigate('game');
+        setTimeout(() => startGame('ai', level), 100);
       });
+    });
+
+    screen.querySelector('#difficulty-close')?.addEventListener('click', () => {
+      const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
+      if (modal) modal.style.display = 'none';
+    });
+
+    // 解説表示
+    const showInfo = (title: string, body: string) => {
+      const modal = screen.querySelector('#info-modal') as HTMLElement;
+      const titleEl = screen.querySelector('#info-title');
+      const bodyEl = screen.querySelector('#info-body');
+      if (modal && titleEl && bodyEl) {
+        titleEl.textContent = title;
+        bodyEl.textContent = body;
+        modal.style.display = 'flex';
+      }
+    };
+
+    screen.querySelector('#stat-currency')?.addEventListener('click', () => {
+      showInfo('💎 ダイヤ', 'ガチャを引くために必要な貴重な宝石です。難易度の高いAIに勝利するとより多く獲得できます。');
+    });
+
+    screen.querySelector('#stat-trophy')?.addEventListener('click', () => {
+      showInfo('🏆 通算戦績', 'これまでの対戦成績（勝利数 / 全試合数）です。最強のオセロマスターを目指しましょう！');
+    });
+
+    screen.querySelector('#info-close')?.addEventListener('click', () => {
+      const modal = screen.querySelector('#info-modal') as HTMLElement;
+      if (modal) modal.style.display = 'none';
     });
 
     // 設定モーダル

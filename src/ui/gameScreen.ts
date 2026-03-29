@@ -88,11 +88,23 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   const skillNameEl = document.getElementById('skill-name-display');
   const skillBtn = document.getElementById('btn-skill') as HTMLButtonElement;
 
-  if (blackIcon) blackIcon.textContent = leaderChar.icon;
+  if (blackIcon) {
+    blackIcon.textContent = leaderChar.icon;
+    blackIcon.className = `player-icon ${leaderChar.imageUrl ? 'has-image' : ''}`;
+    if (leaderChar.imageUrl) (blackIcon as HTMLElement).style.backgroundImage = `url(${leaderChar.imageUrl})`;
+  }
   if (blackName) blackName.textContent = leaderChar.name;
-  if (whiteIcon) whiteIcon.textContent = opponentChar.icon;
+  if (whiteIcon) {
+    whiteIcon.textContent = opponentChar.icon;
+    whiteIcon.className = `player-icon ${opponentChar.imageUrl ? 'has-image' : ''}`;
+    if (opponentChar.imageUrl) (whiteIcon as HTMLElement).style.backgroundImage = `url(${opponentChar.imageUrl})`;
+  }
   if (whiteName) whiteName.textContent = mode === 'ai' ? `CPU(Lv${aiLevel})` : opponentChar.name;
-  if (skillIcon) skillIcon.textContent = leaderChar.icon;
+  if (skillIcon) {
+    skillIcon.textContent = leaderChar.icon;
+    skillIcon.className = `skill-icon ${leaderChar.imageUrl ? 'has-image' : ''}`;
+    if (leaderChar.imageUrl) (skillIcon as HTMLElement).style.backgroundImage = `url(${leaderChar.imageUrl})`;
+  }
   if (skillNameEl) skillNameEl.textContent = leaderChar.activeSkill.name;
 
   // イベントリスナー
@@ -136,10 +148,13 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
     renderer?.stopLoop();
 
     const won = winner === BLACK;
+    const isDraw = winner === 0; // EMPTY
     store.recordGame(won);
-    // 勝利報酬
-    if (won) store.addCurrency(100 + aiLevel * 50);
-    else store.addCurrency(20);
+    
+    // 勝利報酬（難易度補正あり）
+    const baseReward = won ? 100 : (isDraw ? 50 : 20);
+    const finalReward = Math.floor(baseReward * (aiLevel * 0.5 + 0.5));
+    store.addCurrency(finalReward);
 
     setTimeout(() => {
       showResultScreen(winner, scores, counts, leaderChar.name, opponentChar.name);
