@@ -1467,7 +1467,7 @@ input:checked + .toggle-slider::before {
   body { padding-top: var(--safe-top); }
 }
 
-/* „Ÿ„Ÿ„Ÿ AI Difficulty Selection Modal & Version „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ AI Difficulty Selection Modal & Version ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .game-version {
   font-size: 0.8rem;
   opacity: 0.7;
@@ -1534,7 +1534,7 @@ input:checked + .toggle-slider::before {
 }
 
 
-/* „Ÿ„Ÿ„Ÿ Info Modal & Stats „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Info Modal & Stats ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .home-stats {
   display: flex;
   gap: var(--space-md);
@@ -1562,7 +1562,7 @@ input:checked + .toggle-slider::before {
   font-size: 0.95rem;
 }
 
-/* „Ÿ„Ÿ„Ÿ Refined Menu Buttons „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Refined Menu Buttons ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .menu-btn-primary {
   background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%) !important;
   box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
@@ -1578,7 +1578,7 @@ input:checked + .toggle-slider::before {
   transform: translateY(-3px);
 }
 
-/* „Ÿ„Ÿ„Ÿ Enhanced Online Screen „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Enhanced Online Screen ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .online-container {
   display: flex;
   flex-direction: column;
@@ -1624,7 +1624,7 @@ input:checked + .toggle-slider::before {
   50% { opacity: 0.6; }
 }
 
-/* „Ÿ„Ÿ„Ÿ Premium Gacha Screen „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Premium Gacha Screen ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .gacha-machine {
   position: relative;
   height: 250px;
@@ -1710,7 +1710,7 @@ input:checked + .toggle-slider::before {
 }
 
 
-/* „Ÿ„Ÿ„Ÿ Premium UI Elements „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Premium UI Elements ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .currency-badge {
   background: rgba(0, 0, 0, 0.4);
   padding: 4px 12px;
