@@ -16,7 +16,7 @@ export function createFormationScreen(): HTMLElement {
     screen.innerHTML = `
       <div class="screen-header">
         <button class="btn-back" id="formation-back">← 戻る</button>
-        <h1 class="screen-title">キャラ編成</h1>
+        <h1 class="screen-title">キャラクター</h1>
         <div class="currency-display">💎 ${data.currency}</div>
       </div>
       <div class="formation-content">

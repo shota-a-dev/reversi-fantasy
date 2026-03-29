@@ -1582,7 +1582,7 @@ input:checked + .toggle-slider::before {
 .online-container {
   display: flex;
   flex-direction: column;
-  padding: var(--safe-top) var(--space-lg) var(--space-xl);
+  padding: calc(var(--safe-top) + 40px) var(--space-lg) var(--space-xl);
   gap: var(--space-lg);
   max-width: 500px;
   margin: 0 auto;
@@ -1781,5 +1781,92 @@ input:checked + .toggle-slider::before {
   color: var(--color-text-dim);
   margin-top: 8px;
   text-align: center;
+}
+
+
+/* „Ÿ„Ÿ„Ÿ Premium Redesign „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+.menu-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-card);
+  color: var(--color-text-dim);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  line-height: 1.2;
+}
+
+.menu-btn-primary {
+  background: linear-gradient(135deg, #6c5ce7 0%, #4834d4 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(72, 52, 212, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.menu-btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(72, 52, 212, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.menu-btn-accent {
+  background: linear-gradient(135deg, #00b894 0%, #009432 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(0, 148, 50, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* „Ÿ„Ÿ„Ÿ Online Screen Input Enhancement „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ */
+.id-input-group {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+  height: 48px; /* Fixed height for integrity */
+}
+
+.id-input-group input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-md);
+  color: var(--color-text);
+  font-family: monospace;
+  font-size: 0.95rem;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  transition: all 0.2s;
+}
+
+.id-input-group input:focus {
+  border-color: var(--color-primary);
+  background: rgba(0, 0, 0, 0.4);
+  outline: none;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 0 8px rgba(108, 92, 231, 0.3);
+}
+
+.id-input-group button {
+  padding: 0 var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  background: linear-gradient(135deg, #6c5ce7, #4834d4);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.id-input-group button:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 15px rgba(108, 92, 231, 0.4);
 }
 
