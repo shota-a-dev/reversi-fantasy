@@ -94,3 +94,10 @@ body {
   background: var(--color-bg);
   overscroll-behavior: none;
 }
+
+/* Page-level bounce prevention for PWA on iOS
+   Keep most scrolling inside explicit scroll containers (.screen-scrollable) */
+html, body {
+  overscroll-behavior-y: none;
+  overflow: hidden;
+}

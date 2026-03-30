@@ -41,9 +41,13 @@
   align-items: center;
   padding: var(--space-xl) var(--space-md);
   gap: var(--space-lg);
-  /* 最大高さをヘッダー＋セーフ領域を差し引いたビューポートに合わせ、不要なスクロールを抑制する */
-  max-height: calc(100vh - var(--app-header-height) - var(--safe-top) - var(--safe-bottom));
-  overflow: auto;
+  /* Box sizing to ensure padding is included in height calculations */
+  box-sizing: border-box;
+  /* 最大高さをヘッダー＋セーフ領域を差し引いたビューポートに合わせ（dvh を使用）、不要なスクロールを抑制する */
+  max-height: calc(100dvh - var(--app-header-height) - var(--safe-top) - var(--safe-bottom));
+  /* ホームは基本スクロール不要にする（内部要素がオーバーフローする場合は個別にスクロールを許可） */
+  overflow: hidden;
+  overscroll-behavior-y: none;
   justify-content: center;
 }
 .home-logo { text-align: center; margin-bottom: var(--space-md); }

@@ -16,8 +16,12 @@
 
 /* スクロールが必要な画面用クラス（必要最小限に） */
 .screen-scrollable {
+  /* Make the screen itself the scroll container so body/html can be overflow:hidden
+     Height is viewport minus fixed header and safe areas to ensure internal scrolling works */
+  height: calc(100dvh - var(--app-header-height) - var(--safe-top) - var(--safe-bottom));
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 
 .screen::-webkit-scrollbar {
@@ -150,6 +154,8 @@
   align-items: center;
   z-index: 1000;
   padding: var(--space-lg);
+  /* Prevent modal scroll from propagating to body (contain bounce inside modal) */
+  overscroll-behavior-y: contain;
 }
 
 .modal-content {
