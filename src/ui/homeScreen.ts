@@ -104,10 +104,9 @@ export function createHomeScreen(): HTMLElement {
             <p id="diff-confirm-text"></p>
             <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
               <button class="menu-btn menu-btn-primary" id="btn-difficulty-start" style="flex: 1;">対戦開始！</button>
-              
             </div>
           </div>
-          <button class="btn-secondary modal-close" id="difficulty-close">戻る</button>
+          <button class="btn-secondary modal-close" id="difficulty-close">閉じる</button>
         </div>
       </div>
 
@@ -128,7 +127,7 @@ export function createHomeScreen(): HTMLElement {
           </div>
           <div class="setting-item">
             <label>データリセット</label>
-            <button class="btn-danger" id="btn-reset-data">リセット</button>
+            <button class="btn-primary" id="btn-reset-data" style="background: var(--color-accent) !important; padding: var(--space-xs) var(--space-md); font-size: 0.8rem;">リセット</button>
           </div>
           <button class="btn-secondary modal-close" id="settings-close">閉じる</button>
         </div>

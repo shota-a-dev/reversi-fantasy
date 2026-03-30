@@ -1,4 +1,4 @@
-import './style.css';
+import './styles/style.css';
 import { createHomeScreen } from './ui/homeScreen';
 import { createFormationScreen } from './ui/formationScreen';
 import { createGachaScreen } from './ui/gachaScreen';

@@ -1,0 +1,94 @@
+/* ─── CSS Variables & Design System ───────────────────── */
+:root {
+  /* Primary Palette - Divine Theme */
+  --color-bg-deep: #050510;
+  --color-bg: #0a0a1f;
+  --color-bg-card: #151535;
+  --color-bg-card-hover: #1e1e4a;
+  --color-surface: #101030;
+  --color-border: #2a2a6e;
+  
+  /* Accent Colors - Divine/Godly */
+  --color-primary: #8e44ad; /* Divine Purple */
+  --color-primary-glow: #a29bfe;
+  --color-secondary: #00d2d3; /* Celestial Cyan */
+  --color-accent: #e84393;
+  --color-gold: #f1c40f; /* Pure Gold */
+  --color-gold-glow: #fff4e0;
+  --color-divine-light: rgba(255, 255, 255, 0.9);
+  
+  /* Text */
+  --color-text: #f0f0f5;
+  --color-text-dim: #9494b8;
+  --color-text-bright: #ffffff;
+  
+  /* Rarity Colors - Divine */
+  --color-ssr: #ffcc00; /* Radiant Gold */
+  --color-sr: #bf5af2;  /* Sacred Purple */
+  --color-r: #0a84ff;   /* Celestial Blue */
+  
+  /* Shadows & Glows */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.8);
+  --shadow-gold: 0 0 15px rgba(241, 196, 15, 0.4);
+  --shadow-divine: 0 0 30px rgba(162, 155, 254, 0.3);
+  
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 50%;
+  
+  /* Font */
+  --font-main: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Noto Sans JP', sans-serif;
+  
+  /* Safe Area */
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+/* ─── Global Reset & Base ───────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--color-bg-deep);
+  color: var(--color-text);
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  overscroll-behavior: none; /* iOS Safari バウンス抑制 */
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--color-bg);
+  overscroll-behavior: none;
+}
