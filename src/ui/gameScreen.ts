@@ -231,19 +231,22 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
 
   // スキルボタン
   if (skillBtn) {
-    skillBtn.disabled = false;
-    skillBtn.classList.remove('skill-used');
-    const onSkillClick = () => {
+    // クローンして古いリスナーを除去
+    const newSkillBtn = skillBtn.cloneNode(true) as HTMLButtonElement;
+    newSkillBtn.disabled = false;
+    newSkillBtn.classList.remove('skill-used');
+
+    // クリックハンドラはイベントの currentTarget を使って、実際にクリックされた要素を操作する
+    const onSkillClick = (e: Event) => {
       if (!gameManager || !gameManager.isHumanTurn()) return;
       const result = gameManager.activateSkill();
       if (result) {
-        skillBtn.disabled = true;
-        skillBtn.classList.add('skill-used');
+        const btn = e.currentTarget as HTMLButtonElement;
+        btn.disabled = true;
+        btn.classList.add('skill-used');
       }
     };
-    // 古いリスナーを除去して新しいものを追加
-    const newSkillBtn = skillBtn.cloneNode(true) as HTMLButtonElement;
-    newSkillBtn.disabled = false;
+
     skillBtn.parentNode?.replaceChild(newSkillBtn, skillBtn);
     newSkillBtn.addEventListener('click', onSkillClick);
   }

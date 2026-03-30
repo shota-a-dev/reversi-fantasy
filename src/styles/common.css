@@ -7,7 +7,8 @@
   min-height: 100%;
   display: none;
   flex-direction: column;
-  padding-top: var(--safe-top);
+  /* leave space for device safe area plus fixed header */
+  padding-top: calc(var(--safe-top) + var(--app-header-height));
   padding-bottom: var(--safe-bottom);
   background: var(--color-bg);
   z-index: 10;
@@ -42,16 +43,21 @@
 
 /* ─── Screen Header ───────────────────── */
 .screen-header {
-  position: sticky;
-  top: 0;
+  /* Fixed header so it never scrolls away */
+  position: fixed;
+  top: var(--safe-top);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 64px;
+  min-height: var(--app-header-height);
   padding: 0 var(--space-xl);
   background: var(--color-bg);
   backdrop-filter: blur(10px);
-  z-index: 100;
+  z-index: 1000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 

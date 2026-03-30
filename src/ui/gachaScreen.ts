@@ -11,7 +11,6 @@ function rollGacha(): CharacterId {
   const roll = Math.random();
   let cumulative = 0;
 
-  // SSR: 10%, SR: 25%, R: 65%
   const pool: { id: CharacterId; weight: number }[] = CHARACTER_IDS.map(id => {
     const char = CHARACTERS[id];
     const weight = char.rarity === 'SSR' ? 0.05 / 2 : char.rarity === 'SR' ? 0.25 / 2 : 0.7 / 2;
@@ -53,9 +52,9 @@ export function createGachaScreen(): HTMLElement {
             <div class="gacha-light-beam"></div>
           </div>
           <div class="gacha-rates-table">
-            <span class="rate-item ssr">SSR 10%</span>
+            <span class="rate-item ssr">SSR 5%</span>
             <span class="rate-item sr">SR 25%</span>
-            <span class="rate-item r">R 65%</span>
+            <span class="rate-item r">R 70%</span>
           </div>
         </div>
         <div class="gacha-result" id="gacha-result" style="display: none;">

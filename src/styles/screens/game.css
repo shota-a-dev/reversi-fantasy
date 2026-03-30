@@ -209,6 +209,17 @@ canvas {
   cursor: not-allowed;
 }
 
+/* 明示的にスキル使用済みのスタイル（色で非活性を分かりやすくする） */
+.btn-skill.skill-used {
+  background: linear-gradient(135deg, #6c6c6c, #4a4a4a);
+  border-color: #666;
+  color: #cfcfcf;
+  animation: none;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.95;
+}
+
 /* ─── Difficulty Selection Modal ───────────────────── */
 .difficulty-modal-content {
   max-width: 400px;

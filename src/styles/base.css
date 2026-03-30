@@ -55,6 +55,8 @@
   /* Safe Area */
   --safe-top: env(safe-area-inset-top);
   --safe-bottom: env(safe-area-inset-bottom);
+  /* Header height used for fixed header offset */
+  --app-header-height: 64px;
 }
 
 /* ─── Global Reset & Base ───────────────────── */
