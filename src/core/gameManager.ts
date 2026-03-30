@@ -232,8 +232,14 @@ export class GameManager {
     const moves = this.state.validMoves;
     if (moves.length > 0) {
       const [r, c] = moves[Math.floor(Math.random() * moves.length)];
-      this.makeMove(r, c);
-      this.emit('message', { text: '時間切れ！ランダムに石を配置しました' });
+      const placed = this.makeMove(r, c);
+      if (placed) {
+        this.emit('message', { text: '時間切れ！ランダムに石を配置しました' });
+      } else {
+        // 予期せぬ理由で配置に失敗した場合、デッドロックを防ぐため次ターンへ進める
+        this.emit('message', { text: '時間切れ！配置に失敗したためパスしました' });
+        this.nextTurn();
+      }
     } else {
       this.nextTurn();
     }

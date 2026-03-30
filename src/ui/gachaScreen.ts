@@ -14,7 +14,7 @@ function rollGacha(): CharacterId {
   // SSR: 10%, SR: 25%, R: 65%
   const pool: { id: CharacterId; weight: number }[] = CHARACTER_IDS.map(id => {
     const char = CHARACTERS[id];
-    const weight = char.rarity === 'SSR' ? 0.10 / 2 : char.rarity === 'SR' ? 0.25 / 2 : 0.65 / 2;
+    const weight = char.rarity === 'SSR' ? 0.05 / 2 : char.rarity === 'SR' ? 0.25 / 2 : 0.7 / 2;
     return { id, weight };
   });
 
