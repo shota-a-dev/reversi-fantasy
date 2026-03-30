@@ -1,3 +1,4 @@
+import '../styles/screens/game.css';
 import { store } from '../store/store';
 import { CHARACTERS } from '../core/characters';
 import { BLACK, WHITE } from '../core/constants';

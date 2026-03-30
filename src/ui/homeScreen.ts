@@ -1,3 +1,4 @@
+import '../styles/screens/home.css';
 import { store } from '../store/store';
 import { CHARACTERS } from '../core/characters';
 import { screenManager } from './screenManager';

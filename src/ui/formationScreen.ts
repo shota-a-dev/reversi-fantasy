@@ -1,3 +1,4 @@
+import '../styles/screens/formation.css';
 import { store } from '../store/store';
 import { CHARACTERS } from '../core/characters';
 import type { CharacterId } from '../core/constants';

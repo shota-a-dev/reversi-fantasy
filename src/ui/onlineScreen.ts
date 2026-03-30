@@ -1,3 +1,4 @@
+import '../styles/screens/online.css';
 import { screenManager } from './screenManager';
 import { onlineManager } from '../core/onlineManager';
 import { store } from '../store/store';

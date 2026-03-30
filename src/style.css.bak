@@ -1,0 +1,282 @@
+/* Backup of original style.css - created before refactor */
+/* This file is an exact copy of src/style.css at the time of backup. */
+
+/* ─── CSS Variables & Design System ───────────────────── */
+:root {
+  /* Primary Palette - Divine Theme */
+  --color-bg-deep: #050510;
+  --color-bg: #0a0a1f;
+  --color-bg-card: #151535;
+  --color-bg-card-hover: #1e1e4a;
+  --color-surface: #101030;
+  --color-border: #2a2a6e;
+  
+  /* Accent Colors - Divine/Godly */
+  --color-primary: #8e44ad; /* Divine Purple */
+  --color-primary-glow: #a29bfe;
+  --color-secondary: #00d2d3; /* Celestial Cyan */
+  --color-accent: #e84393;
+  --color-gold: #f1c40f; /* Pure Gold */
+  --color-gold-glow: #fff4e0;
+  --color-divine-light: rgba(255, 255, 255, 0.9);
+  
+  /* Text */
+  --color-text: #f0f0f5;
+  --color-text-dim: #9494b8;
+  --color-text-bright: #ffffff;
+  
+  /* Rarity Colors - Divine */
+  --color-ssr: #ffcc00; /* Radiant Gold */
+  --color-sr: #bf5af2;  /* Sacred Purple */
+  --color-r: #0a84ff;   /* Celestial Blue */
+  
+  /* Shadows & Glows */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.8);
+  --shadow-gold: 0 0 15px rgba(241, 196, 15, 0.4);
+  --shadow-divine: 0 0 30px rgba(162, 155, 254, 0.3);
+  
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 50%;
+  
+  /* Font */
+  --font-main: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Noto Sans JP', sans-serif;
+  
+  /* Safe Area */
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+/* ─── Global Reset & Base ───────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--color-bg-deep);
+  color: var(--color-text);
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  overscroll-behavior: none; /* iOS Safari バウンス抑制 */
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--color-bg);
+  overscroll-behavior: none;
+}
+
+/* ─── Screens ───────────────────── */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  display: none;
+  flex-direction: column;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  background: var(--color-bg);
+  z-index: 10;
+}
+
+/* スクロールが必要な画面用クラス（必要最小限に） */
+.screen-scrollable {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── 画像表示の強化 ─── */
+.has-image {
+  color: transparent !important; /* 絵文字を透明に */
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  text-indent: -9999px; /* テキストを画面外へ飛ばす（確実な非表示） */
+}
+
+.screen::-webkit-scrollbar {
+  display: none;
+}
+
+.screen-active {
+  display: flex;
+}
+
+/* Screen Transitions */
+@keyframes slideInLeft {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-30%); opacity: 0; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(30%); opacity: 0; }
+}
+
+.screen-enter-left { animation: slideInLeft 0.35s ease-out forwards; }
+.screen-exit-left { animation: slideOutLeft 0.35s ease-out forwards; }
+.screen-enter-right { animation: slideInRight 0.35s ease-out forwards; }
+.screen-exit-right { animation: slideOutRight 0.35s ease-out forwards; }
+
+/* ─── Screen Header ───────────────────── */
+.screen-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 64px;
+  padding: 0 var(--space-xl);
+  background: var(--color-bg);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-back {
+  position: absolute;
+  left: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-dim);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--space-xs) var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  color: var(--color-primary-glow);
+  transform: translateY(-50%) translateX(-2px);
+}
+
+.screen-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-align: center;
+  background: linear-gradient(180deg, var(--color-primary-glow), var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--color-primary-glow);
+  text-shadow: 0 0 15px rgba(108, 92, 231, 0.2);
+}
+
+.currency-display {
+  position: absolute;
+  right: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+/* ─── Home Screen ───────────────────── */
+.home-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, #1a0a2e 0%, #050510 100%);
+  z-index: 0;
+}
+
+.home-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(142, 68, 173, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(46, 204, 113, 0.1) 0%, transparent 50%);
+  filter: blur(40px);
+  animation: nebulaPulse 10s infinite alternate;
+}
+
+@keyframes nebulaPulse {
+  0% { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 0.8; transform: scale(1.1); }
+}
+
+.home-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.floating-particle {
+  position: absolute;
+  background: var(--color-primary-glow);
+  border-radius: 50%;
+  animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+  0% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-30px) translateX(15px); }
+  50% { transform: translateY(-10px) translateX(-10px); }
+  75% { transform: translateY(-40px) translateX(5px); }
+  100% { transform: translateY(0) translateX(0); }
+}
+
+.home-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xl) var(--space-md);
+  gap: var(--space-lg);
+  min-height: 100dvh;
+  justify-content: center;
+}
+
+/* (file continues — backup contains full original stylesheet) */

@@ -1,3 +1,4 @@
+import '../styles/screens/result.css';
 import { screenManager } from './screenManager';
 import { store } from '../store/store';
 import { BLACK, EMPTY } from '../core/constants';
