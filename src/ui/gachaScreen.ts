@@ -116,28 +116,34 @@ export function createGachaScreen(): HTMLElement {
     if (resultPanel) {
       resultPanel.style.display = 'block';
       resultPanel.innerHTML = `
-        <div class="gacha-result-cards">
-          ${results.map(r => {
-            const char = CHARACTERS[r.id];
-            const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
-            return `
-              <div class="gacha-result-card ${r.isNew ? 'new-char' : 'dupe-char'} rarity-${char.rarity.toLowerCase()}-bg"
-                   style="animation-delay: ${results.indexOf(r) * 0.15}s">
-                <div class="result-rarity">${char.rarity}</div>
-                <div class="result-icon ${char.imageUrl ? 'has-image' : ''}" 
-                     style="background-image: ${char.imageUrl ? `url(${imgUrl})` : 'none'}; background-color: ${char.imageUrl ? 'transparent' : `${char.color}44`}">
-                  ${char.imageUrl ? '' : char.icon}
+        <div class="gacha-result-overlay" id="gacha-result-overlay">
+          <div class="gacha-result-cards ${results.length > 1 ? 'grid-ten' : 'single-card'}">
+            ${results.map(r => {
+              const char = CHARACTERS[r.id];
+              const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
+              return `
+                <div class="gacha-result-card ${r.isNew ? 'new-char' : 'dupe-char'} rarity-${char.rarity.toLowerCase()}-bg"
+                     style="animation-delay: ${results.indexOf(r) * 0.1}s">
+                  <div class="result-rarity">${char.rarity}</div>
+                  <div class="result-image-container">
+                    <div class="result-icon ${char.imageUrl ? 'has-image' : ''}" 
+                         style="background-image: ${char.imageUrl ? `url(${imgUrl})` : 'none'}; background-color: ${char.imageUrl ? 'transparent' : `${char.color}44`}">
+                      ${char.imageUrl ? '' : char.icon}
+                    </div>
+                  </div>
+                  <div class="result-name">${char.name}</div>
+                  <div class="result-status">
+                    ${r.isNew ? '<span class="new-badge">NEW!</span>' : `<span class="dupe-badge">凸${r.uncapLevel}</span>`}
+                  </div>
                 </div>
-                <div class="result-name">${char.name}</div>
-                <div class="result-status">
-                  ${r.isNew ? '<span class="new-badge">NEW!</span>' : `<span class="dupe-badge">凸${r.uncapLevel}</span>`}
-                </div>
-              </div>            `;
-          }).join('')}        </div>
-        <button class="btn-gacha-ok" id="gacha-ok">OK</button>
+              `;
+            }).join('')}
+          </div>
+          <div class="tap-to-close">画面をタップして戻る</div>
+        </div>
       `;
 
-      resultPanel.querySelector('#gacha-ok')?.addEventListener('click', () => {
+      resultPanel.querySelector('#gacha-result-overlay')?.addEventListener('click', () => {
         isAnimating = false;
         render();
       });

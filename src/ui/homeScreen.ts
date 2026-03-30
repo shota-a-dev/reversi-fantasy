@@ -127,7 +127,7 @@ export function createHomeScreen(): HTMLElement {
           </div>
           <div class="setting-item">
             <label>データリセット</label>
-            <button class="btn-primary" id="btn-reset-data" style="background: var(--color-accent) !important; padding: var(--space-xs) var(--space-md); font-size: 0.8rem;">リセット</button>
+            <button class="btn-primary" id="btn-reset-data" style="padding: 4px 12px; font-size: 0.8rem; background: var(--color-accent) !important;">リセット</button>
           </div>
           <button class="btn-secondary modal-close" id="settings-close">閉じる</button>
         </div>
