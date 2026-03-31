@@ -183,19 +183,15 @@ canvas {
   box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
 }
 
-.btn-skill:disabled {
+.btn-skill:disabled, .btn-skill.skill-used {
+  background: #2a2a2a !important; /* 暗いグレーに固定 */
+  border-color: #444 !important;
+  color: #666 !important;
   filter: grayscale(1);
-  opacity: 0.5;
+  opacity: 0.6;
+  animation: none;
+  box-shadow: none;
   cursor: not-allowed;
-}
-
-.btn-skill-enemy {
-  pointer-events: none; /* 相手のボタンはクリック不可 */
-}
-
-.skill-used {
-  filter: grayscale(1);
-  opacity: 0.5;
 }
 
 .btn-surrender {
