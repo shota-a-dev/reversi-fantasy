@@ -2,7 +2,6 @@ import './online.css';
 import { screenManager } from '../screenManager';
 import { onlineManager } from '../../core/onlineManager';
 import { store } from '../../store/store';
-import { CHARACTERS } from '../../core/characters';
 import { startGame } from '../gameScreen/gameScreen';
 
 export function createOnlineScreen(): HTMLElement {
@@ -18,8 +17,6 @@ export function initOnlineScreen(): void {
   const screen = document.getElementById('screen-online');
   if (!screen) return;
 
-  const data = store.getData();
-  const leader = CHARACTERS[data.selectedLeader];
 
   screen.innerHTML = `
     <div class="screen-header">
