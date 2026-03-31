@@ -5,6 +5,7 @@ import type { CharacterId } from '../core/constants';
 import { CHARACTER_IDS, GACHA_COST } from '../core/constants';
 import { screenManager } from './screenManager';
 import { audioManager } from '../core/audioManager';
+import { showModal } from './components/modal';
 
 // ガチャ排出ロジック
 function rollGacha(): CharacterId {
@@ -45,21 +46,19 @@ export function createGachaScreen(): HTMLElement {
         <div class="currency-badge">💎 ${data.currency} </div>
       </div>
       <div class="gacha-content">
-        <div class="gacha-machine-container">
-          <div class="gacha-machine">
-            <div class="gacha-orb" id="gacha-orb">
-              <div class="gacha-orb-image"></div>
-            </div>
-            <div class="gacha-light-beam"></div>
-          </div>
-          <div class="gacha-rates-table">
-            <span class="rate-item ssr">SSR 10%</span>
-            <span class="rate-item sr">SR 25%</span>
-            <span class="rate-item r">R 65%</span>
-          </div>
+        <div class="gacha-view">
+          <div class="gacha-orb-image" id="gacha-orb"></div>
         </div>
+
+        <div class="gacha-rates-table">
+          <span class="rate-item ssr">SSR 10%</span>
+          <span class="rate-item sr">SR 25%</span>
+          <span class="rate-item r">R 65%</span>
+        </div>
+
         <div class="gacha-result" id="gacha-result" style="display: none;">
         </div>
+
         <div class="btn-gacha-container">
           <button class="btn-gacha btn-single" id="btn-gacha-single" ${data.currency < GACHA_COST ? 'disabled' : ''}>
             単発召喚<br><small>${GACHA_COST} 💎</small>
@@ -76,15 +75,19 @@ export function createGachaScreen(): HTMLElement {
       screenManager.back();
     });
 
-    screen.querySelector('#btn-gacha-single')?.addEventListener('click', () => {
+    const showConfirm = (count: number) => {
       if (isAnimating) return;
-      performGacha(1);
-    });
+      showModal({
+        title: '🎰 神託の確認',
+        message: `${count}回召喚を実行しますか？<br><br>消費: 💎 ${GACHA_COST * count}`,
+        confirmText: '召喚する！',
+        cancelText: 'キャンセル',
+        onConfirm: () => performGacha(count)
+      });
+    };
 
-    screen.querySelector('#btn-gacha-ten')?.addEventListener('click', () => {
-      if (isAnimating) return;
-      performGacha(10);
-    });
+    screen.querySelector('#btn-gacha-single')?.addEventListener('click', () => showConfirm(1));
+    screen.querySelector('#btn-gacha-ten')?.addEventListener('click', () => showConfirm(10));
   };
 
   const performGacha = (count: number) => {
@@ -113,9 +116,8 @@ export function createGachaScreen(): HTMLElement {
       }
     });
 
-    // 演出: 短い待ち時間に変更（以前は1.5秒）してUXを改善
+    // 演出: 短い待ち時間
     setTimeout(() => {
-
       if (resultPanel) {
         resultPanel.style.display = 'block';
 
@@ -154,7 +156,7 @@ export function createGachaScreen(): HTMLElement {
             render();
           });
         } else {
-          // 10連など複数ヒット時は単発表示1件ずつを順に表示（タップで次へ・最終は閉じる表示）
+          // 10連など複数ヒット時は単発表示1件ずつを順に表示
           let idx = 0;
           resultPanel.innerHTML = `
             <div class="gacha-result-overlay" id="gacha-result-overlay">
@@ -176,7 +178,7 @@ export function createGachaScreen(): HTMLElement {
         }
       }
 
-      // 通貨表示更新（アイコンを維持）
+      // 通貨表示更新
       const currencyDisplay = screen.querySelector('.currency-badge');
       if (currencyDisplay) {
         currencyDisplay.innerHTML = `💎 ${store.getCurrency()}`;

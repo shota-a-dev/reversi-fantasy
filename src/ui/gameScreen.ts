@@ -8,6 +8,7 @@ import type { GameState, GameMode } from '../core/gameManager';
 import { BoardRenderer } from '../render/boardRenderer';
 import { screenManager } from './screenManager';
 import { showResultScreen } from './resultScreen.ts';
+import { showModal } from './components/modal';
 
 let gameManager: GameManager | null = null;
 let renderer: BoardRenderer | null = null;
@@ -251,11 +252,17 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
     const newBtn = surrenderBtn.cloneNode(true) as HTMLButtonElement;
     surrenderBtn.parentNode?.replaceChild(newBtn, surrenderBtn);
     newBtn.addEventListener('click', () => {
-      if (confirm('投了しますか？')) {
-        cleanupGame();
-        store.recordGame(false);
-        screenManager.navigate('home');
-      }
+      showModal({
+        title: '🏳️ 投了の確認',
+        message: '対局を終了してホームに戻りますか？<br>（負け扱いとなります）',
+        confirmText: '投了する',
+        cancelText: '続ける',
+        onConfirm: () => {
+          cleanupGame();
+          store.recordGame(false);
+          screenManager.navigate('home');
+        }
+      });
     });
   }
 
