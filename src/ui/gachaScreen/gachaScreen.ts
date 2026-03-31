@@ -1,6 +1,6 @@
 import './gacha.css';
 import { store } from '../../store/store';
-import { CHARACTERS } from '../../core/characters';
+import { CHARACTERS } from '../../core/characters/characters';
 import type { CharacterId } from '../../core/constants';
 import { CHARACTER_IDS, GACHA_COST } from '../../core/constants';
 import { screenManager } from '../screenManager';

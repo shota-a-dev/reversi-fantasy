@@ -1,258 +1,184 @@
-/* ─── Game Screen Redesign (25/50/25) ───────────────────── */
 #screen-game {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: var(--color-bg-deep);
-  position: relative;
+  justify-content: space-between;
+  height: 100vh;
+  background: radial-gradient(circle at center, #2c3e50 0%, #000000 100%);
+  color: white;
   overflow: hidden;
 }
 
-/* 敵情報 (25%) */
-.game-enemy {
-  height: 25%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 var(--space-lg);
-  background: linear-gradient(180deg, rgba(255, 0, 0, 0.1) 0%, transparent 100%);
+/* 情報コンテナ（敵・自分共通） */
+.game-info-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 3fr 2fr; /* 比率 3:2 */
+  height: 25vh;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 盤面 (50%) */
-.board-container {
-  height: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-sm);
-  background: rgba(0, 0, 0, 0.2);
-  position: relative;
-}
-
-/* 自分情報 (25%) */
-.game-player {
-  height: 25%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 var(--space-lg);
-  background: linear-gradient(0deg, rgba(0, 210, 211, 0.1) 0%, transparent 100%);
+.player-info {
+  border-bottom: none;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-canvas {
-  max-width: 95vmin;
-  max-height: 95vmin;
-  aspect-ratio: 1 / 1;
-  touch-action: none;
-  filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
-}
-
-/* 共通ボックススタイル */
-.player-stones-box, .player-timer-box {
-  flex: 1;
+/* 各セルの中央揃え */
+.info-cell {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  position: relative;
 }
 
-.player-portrait-box {
-  flex: 1.5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* 石の数 */
+.stone-cell {
   gap: 8px;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
-
-/* 石アイコン */
 .stone-icon {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
-
-.stone-black {
-  background: radial-gradient(circle at 30% 30%, #444, #000);
-}
-
-.stone-white {
-  background: radial-gradient(circle at 30% 30%, #fff, #ccc);
-}
-
-.stone-count {
-  font-size: 2rem;
-  font-weight: 900;
-  color: var(--color-gold);
-  text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
-}
+.stone-black { background: #000; border: 1px solid #333; }
+.stone-white { background: #fff; border: 1px solid #ccc; }
 
 /* ポートレート */
 .divine-portrait-wrapper {
   position: relative;
-  width: 70px;
-  height: 70px;
-  border-radius: var(--radius-md);
-  border: 2px solid var(--color-gold);
-  box-shadow: 0 0 15px rgba(241, 196, 15, 0.3);
-  overflow: hidden;
-  background: var(--color-bg-card);
+  width: 60px;
+  height: 60px;
 }
-
 .divine-portrait {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   background-size: cover;
   background-position: center;
+  border: 2px solid gold;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
 }
-
-.divine-player-name {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-text-bright);
-  max-width: 100px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.divine-rarity {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: gold;
+  color: black;
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
 /* タイマー */
+.timer-cell {
+  font-family: 'Courier New', Courier, monospace;
+}
 .timer-display {
-  font-family: 'Outfit', sans-serif;
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: var(--color-secondary);
-  text-shadow: 0 0 15px rgba(0, 210, 211, 0.4);
+  font-size: 2rem;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
 }
-
 .timer-critical {
-  color: var(--color-accent);
-  animation: timerPulse 0.5s infinite alternate;
+  color: #ff4d4d;
+  animation: pulse 0.5s infinite alternate;
 }
 
-@keyframes timerPulse {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(1.1); opacity: 0.8; }
+/* マナ */
+.mana-cell {
+  gap: 4px;
+  font-size: 1.2rem;
+  color: #00d4ff;
 }
+.mana-icon { font-size: 1rem; }
 
-/* アクティブプレイヤー強調 */
-.active-player {
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 0 20px rgba(241, 196, 15, 0.1);
-}
-
-.active-player .divine-portrait-wrapper {
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 20px rgba(0, 210, 211, 0.5);
-}
-
-/* ボタン類 */
-.game-controls {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
+/* スキルボタン */
 .btn-skill {
-  background: linear-gradient(135deg, var(--color-primary), #6c5ce7);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #333;
+  border: 2px solid #555;
   color: white;
-  border-radius: var(--radius-sm);
-  padding: 4px 12px;
-  font-weight: 800;
-  font-size: 0.8rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
   transition: all 0.2s;
+  opacity: 0.5;
 }
-
-.btn-skill:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
+.btn-skill.can-use {
+  opacity: 1;
+  border-color: gold;
+  box-shadow: 0 0 15px gold;
+  animation: glow 2s infinite;
 }
+.skill-icon { font-size: 1.2rem; }
 
-.btn-skill:disabled, .btn-skill.skill-used {
-  background: #2a2a2a !important; /* 暗いグレーに固定 */
-  border-color: #444 !important;
-  color: #666 !important;
-  filter: grayscale(1);
-  opacity: 0.6;
-  animation: none;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
+/* 投了ボタン */
 .btn-surrender {
-  margin-top: 20px;
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-dim);
-  font-size: 1rem;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
   padding: 4px 12px;
   border-radius: 4px;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.btn-surrender:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-  border-color: white;
+/* 盤面コンテナ */
+.board-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+#game-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1 / 1;
 }
 
-/* メッセージ表示 (はみ出し修正) */
+/* メッセージ */
 .game-message {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 90%; /* 画面幅いっぱいに広がらないよう制限 */
-  max-width: 400px;
-  transform: translate(-50%, -50%) scale(0.5);
-  background: rgba(0, 0, 0, 0.85);
-  color: var(--color-gold);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--color-gold);
-  font-weight: 900;
-  font-size: 1.2rem;
-  z-index: 100;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid gold;
   pointer-events: none;
   opacity: 0;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  text-align: center;
-  word-wrap: break-word; /* 長いテキストの折り返し */
-  white-space: normal; /* 折り返しを許可 */
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  transition: opacity 0.3s;
+  z-index: 100;
+  white-space: nowrap;
+}
+.message-show { opacity: 1; }
+
+/* アニメーション */
+@keyframes pulse {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(1.1); opacity: 0.8; }
+}
+@keyframes glow {
+  0% { box-shadow: 0 0 5px gold; }
+  50% { box-shadow: 0 0 20px gold; }
+  100% { box-shadow: 0 0 5px gold; }
 }
 
-.game-message.message-show {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+/* アクティブプレイヤー強調 */
+.active-player {
+  background: rgba(255, 215, 0, 0.1);
+  box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.2);
 }
-
-.divine-rarity {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  background: rgba(0,0,0,0.8);
-  font-size: 0.5rem;
-  font-weight: 900;
-  padding: 1px 0;
-}
-
-.rarity-ssr { color: var(--color-ssr); }
-.rarity-sr { color: var(--color-sr); }
-.rarity-r { color: var(--color-r); }

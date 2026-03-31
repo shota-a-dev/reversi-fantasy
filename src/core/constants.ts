@@ -18,6 +18,10 @@ export const MAX_ACTIVE_SKILL_USES = 1; // 1対局あたりのアクティブス
 // 凸レベル
 export const MAX_UNCAP_LEVEL = 5;
 
+// マナ関連
+export const MAX_MANA = 10;
+export const INITIAL_MANA = 2;
+
 // ガチャ
 export const GACHA_COST = 100; // ゲーム内通貨
 export const GACHA_RATES: Record<string, number> = {
@@ -28,12 +32,12 @@ export const GACHA_RATES: Record<string, number> = {
 
 // キャラクターID
 export const CHARACTER_IDS = [
-  'alfred',
-  'luna',
-  'drake',
-  'mira',
-  'zephyr',
-  'noir',
+  'god_zeus',
+  'god_hades',
+  'god_ares',
+  'god_athena',
+  'god_hermes',
+  'god_artemis',
 ] as const;
 
 export type CharacterId = typeof CHARACTER_IDS[number];

@@ -1,5 +1,5 @@
 import type { Board, CellState } from './constants';
-import { BLACK, WHITE, TURN_TIME_LIMIT } from './constants';
+import { BLACK, WHITE, TURN_TIME_LIMIT, MAX_MANA, INITIAL_MANA } from './constants';
 import {
   createInitialBoard,
   cloneBoard,
@@ -10,7 +10,7 @@ import {
   countStones,
   opponent,
 } from './board';
-import type { CharacterData, SkillContext, SkillResult, PassiveTrigger } from './characters';
+import type { CharacterData, SkillContext, SkillResult, PassiveTrigger } from './characters/characters';
 import { onlineManager } from './onlineManager';
 import type { OnlineMessage } from './onlineManager';
 import { audioManager } from './audioManager';
@@ -22,7 +22,8 @@ export interface PlayerInfo {
   character: CharacterData;
   uncapLevel: number;
   isHuman: boolean;
-  activeSkillUsed: boolean;
+  mana: number;
+  maxMana: number;
   scoreMultiplier: number;
   timeBonus: number;
 }
@@ -108,12 +109,12 @@ export class GameManager {
   }
 
   private createDefaultPlayer(): PlayerInfo {
-    // デフォルトキャラは動的にインポート不要、後で設定
     return {
       character: null as unknown as CharacterData,
       uncapLevel: 0,
       isHuman: true,
-      activeSkillUsed: false,
+      mana: INITIAL_MANA,
+      maxMana: MAX_MANA,
       scoreMultiplier: 1.0,
       timeBonus: 0,
     };
@@ -152,7 +153,8 @@ export class GameManager {
       character: blackChar,
       uncapLevel: blackUncap,
       isHuman: true,
-      activeSkillUsed: false,
+      mana: INITIAL_MANA,
+      maxMana: MAX_MANA,
       scoreMultiplier: this.calculateScoreMultiplier(blackChar, blackUncap),
       timeBonus: 0,
     };
@@ -160,7 +162,8 @@ export class GameManager {
       character: whiteChar,
       uncapLevel: whiteUncap,
       isHuman: mode !== 'ai',
-      activeSkillUsed: false,
+      mana: INITIAL_MANA,
+      maxMana: MAX_MANA,
       scoreMultiplier: this.calculateScoreMultiplier(whiteChar, whiteUncap),
       timeBonus: 0,
     };
@@ -228,7 +231,6 @@ export class GameManager {
   }
 
   private handleTimeout(): void {
-    // ランダムに合法手を選ぶか、パスする
     const moves = this.state.validMoves;
     if (moves.length > 0) {
       const [r, c] = moves[Math.floor(Math.random() * moves.length)];
@@ -236,7 +238,6 @@ export class GameManager {
       if (placed) {
         this.emit('message', { text: '時間切れ！ランダムに石を配置しました' });
       } else {
-        // 予期せぬ理由で配置に失敗した場合、デッドロックを防ぐため次ターンへ進める
         this.emit('message', { text: '時間切れ！配置に失敗したためパスしました' });
         this.nextTurn();
       }
@@ -268,8 +269,6 @@ export class GameManager {
     this.state.turnCount++;
 
     audioManager.playPlaceStone();
-    // 反転音はRenderer側のタイミングに合わせることも検討したが、まずはここで1回鳴らす
-    // または、flipsの数だけ鳴らすと重いので、ここで1回代表で鳴らす
     setTimeout(() => audioManager.playFlipStone(), 300);
 
     // パッシブ: onFlip
@@ -297,6 +296,10 @@ export class GameManager {
     this.state.validMoves = getValidMoves(this.state.board, next);
     this.state.previewCells = [];
 
+    // マナ加算: 自分のターンが来るたびに+1
+    const nextPlayerInfo = this.state.players[next];
+    nextPlayerInfo.mana = Math.min(nextPlayerInfo.maxMana, nextPlayerInfo.mana + 1);
+
     // パスチェック
     if (this.state.validMoves.length === 0) {
       const otherMoves = getValidMoves(this.state.board, opponent(next));
@@ -304,7 +307,6 @@ export class GameManager {
         this.endGame();
         return;
       }
-      // パス
       this.emit('message', { text: `${next === BLACK ? '黒' : '白'}はパスです` });
       this.state.currentPlayer = opponent(next);
       this.state.validMoves = otherMoves;
@@ -318,7 +320,6 @@ export class GameManager {
     this.emit('turnChange', { player: this.state.currentPlayer });
     this.emit('stateChange', this.getState());
 
-    // AIのターンの場合
     if (this.state.mode === 'ai' && !playerInfo.isHuman) {
       this.requestAIMove();
     }
@@ -328,7 +329,6 @@ export class GameManager {
     this.state.phase = 'finished';
     this.stopTimer();
 
-    // パッシブ: onGameEnd
     this.triggerPassive('onGameEnd', BLACK);
     this.triggerPassive('onGameEnd', WHITE);
 
@@ -353,27 +353,27 @@ export class GameManager {
   activateSkill(isRemote: boolean = false): SkillResult | null {
     if (this.state.phase !== 'playing') return null;
 
-    // オンライン時のチェック
     if (this.state.mode === 'online' && !isRemote && !this.isHumanTurn()) {
       return null;
     }
 
     const player = this.state.currentPlayer;
     const playerInfo = this.state.players[player];
-    if (playerInfo.activeSkillUsed) {
-      this.emit('message', { text: 'スキルは既に使用済みです' });
+    const skill = playerInfo.character.activeSkill;
+
+    if (playerInfo.mana < skill.manaCost) {
+      this.emit('message', { text: `マナが足りません (必要: ${skill.manaCost})` });
       return null;
     }
 
     const ctx = this.createSkillContext(player);
-    const result = playerInfo.character.activeSkill.execute(ctx);
+    const result = skill.execute(ctx);
 
-    // 自分のスキルなら相手に送信
     if (this.state.mode === 'online' && !isRemote) {
       onlineManager.send({ type: 'skill' });
     }
 
-    playerInfo.activeSkillUsed = true;
+    playerInfo.mana -= skill.manaCost;
     this.state.board = result.board;
     this.state.skillResult = result;
     this.state.validMoves = getValidMoves(this.state.board, player);
@@ -402,6 +402,7 @@ export class GameManager {
       uncapLevel: info.uncapLevel,
       scoreMultiplier: info.scoreMultiplier,
       timeBonus: info.timeBonus,
+      mana: info.mana,
     };
   }
 
@@ -412,32 +413,27 @@ export class GameManager {
     if (passive.trigger === trigger) {
       const ctx = this.createSkillContext(player);
       passive.effect(ctx, info.uncapLevel);
-      // ctxの変更を反映
       info.scoreMultiplier = ctx.scoreMultiplier;
       info.timeBonus = ctx.timeBonus;
+      info.mana = ctx.mana;
     }
   }
 
-  // AI
   private requestAIMove(): void {
-    if (!this.aiWorker) {
-      // フォールバック: Workerがいない場合はパス
-      return;
-    }
+    if (!this.aiWorker) return;
 
     setTimeout(() => {
       if (this.state.phase !== 'playing') return;
 
       const player = this.state.currentPlayer;
       const playerInfo = this.state.players[player];
+      const skill = playerInfo.character.activeSkill;
 
-      // AIのスキル使用判断
-      if (!playerInfo.activeSkillUsed) {
+      if (playerInfo.mana >= skill.manaCost) {
         const counts = countStones(this.state.board);
         const myCount = player === BLACK ? counts.black : counts.white;
         const opCount = player === BLACK ? counts.white : counts.black;
 
-        // 条件: 1.中級以上 2.石の数が負けている or 3.一定の確率 (20%)
         const shouldSkill = this.state.aiLevel >= 2 && (
           (opCount > myCount + 5) || 
           (Math.random() < 0.2)
@@ -445,8 +441,6 @@ export class GameManager {
 
         if (shouldSkill) {
           this.activateSkill();
-          // スキル使用後、盤面が変わるため合法手を再計算（activateSkill内で処理済み）
-          // スキルによってはそのまま自分のターンが続く場合もあるため、少し待ってから移動をリクエスト
           if (this.state.currentPlayer === player) {
             this.requestAIMove();
             return;
@@ -462,9 +456,6 @@ export class GameManager {
     }, 800 + Math.random() * 800);
   }
 
-  // AIメソッドはWorkerに集約したため削除
-
-  // 状態取得
   getState(): Readonly<GameState> {
     return { ...this.state };
   }

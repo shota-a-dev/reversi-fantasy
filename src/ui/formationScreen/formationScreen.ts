@@ -1,6 +1,6 @@
 import './formation.css';
 import { store } from '../../store/store';
-import { CHARACTERS } from '../../core/characters';
+import { CHARACTERS } from '../../core/characters/characters';
 import type { CharacterId } from '../../core/constants';
 import { CHARACTER_IDS } from '../../core/constants';
 import { screenManager } from '../screenManager';

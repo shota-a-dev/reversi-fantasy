@@ -1,5 +1,5 @@
 import './formationDetail.css';
-import { CHARACTERS } from '../../core/characters';
+import { CHARACTERS } from '../../core/characters/characters';
 import { store } from '../../store/store';
 import type { CharacterId } from '../../core/constants';
 

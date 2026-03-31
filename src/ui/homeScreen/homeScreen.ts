@@ -1,6 +1,6 @@
 import './home.css';
 import { store } from '../../store/store';
-import { CHARACTERS } from '../../core/characters';
+import { CHARACTERS } from '../../core/characters/characters';
 import { screenManager } from '../screenManager';
 import { startGame } from '../gameScreen/gameScreen';
 import { audioManager } from '../../core/audioManager';

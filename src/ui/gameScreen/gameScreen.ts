@@ -1,6 +1,6 @@
 import './game.css';
 import { store } from '../../store/store';
-import { CHARACTERS } from '../../core/characters';
+import { CHARACTERS } from '../../core/characters/characters';
 import { BLACK, WHITE } from '../../core/constants';
 import type { CellState } from '../../core/constants';
 import { GameManager } from '../../core/gameManager';
@@ -21,59 +21,70 @@ export function createGameScreen(): HTMLElement {
   screen.style.display = 'none';
 
   screen.innerHTML = `
-    <!-- 敵情報 (25%) -->
-    <div class="game-enemy" id="game-enemy-info">
-      <div class="player-stones-box">
+    <!-- 敵情報 -->
+    <div class="game-info-container enemy-info" id="game-enemy-info">
+      <!-- 1行目 (比率3) -->
+      <div class="info-cell stone-cell">
         <div class="stone-icon stone-white"></div>
         <span class="stone-count" id="player-white-stones">2</span>
       </div>
-      <div class="player-portrait-box">
+      <div class="info-cell portrait-cell">
         <div class="divine-portrait-wrapper">
           <div class="divine-portrait" id="player-white-icon"></div>
           <div class="divine-rarity" id="player-white-rarity">SSR</div>
         </div>
-        <div class="divine-player-name" id="player-white-name">Opponent</div>
-        <div class="game-controls">
-          <button class="btn-skill btn-skill-enemy" id="btn-skill-enemy" disabled>
-            <span class="skill-icon" id="skill-icon-enemy">⚡</span>
-            <span class="skill-name" id="skill-name-enemy">権能</span>
-          </button>
-        </div>
       </div>
-      <div class="player-timer-box">
+      <div class="info-cell timer-cell">
         <div class="timer-display" id="timer-enemy">15</div>
       </div>
+      <!-- 2行目 (比率2) -->
+      <div class="info-cell mana-cell">
+        <div class="mana-icon">💧</div>
+        <span class="mana-count" id="player-white-mana">2</span>
+      </div>
+      <div class="info-cell skill-cell">
+        <button class="btn-skill btn-skill-enemy" id="btn-skill-enemy" disabled>
+          <span class="skill-icon" id="skill-icon-enemy">⚡</span>
+        </button>
+      </div>
+      <div class="info-cell spacer-cell"></div>
     </div>
 
     <div class="game-message" id="game-message"></div>
     
-    <!-- 盤面 (50%) -->
+    <!-- 盤面 -->
     <div class="board-container" id="board-container">
       <canvas id="game-canvas"></canvas>
     </div>
 
-    <!-- 自分情報 (25%) -->
-    <div class="game-player" id="game-player-info">
-      <div class="player-stones-box">
+    <!-- 自分情報 -->
+    <div class="game-info-container player-info" id="game-player-info">
+      <!-- 1行目 (比率3) -->
+      <div class="info-cell stone-cell">
         <div class="stone-icon stone-black"></div>
         <span class="stone-count" id="player-black-stones">2</span>
       </div>
-      <div class="player-portrait-box">
+      <div class="info-cell portrait-cell">
         <div class="divine-portrait-wrapper">
           <div class="divine-portrait" id="player-black-icon"></div>
           <div class="divine-rarity" id="player-black-rarity">SSR</div>
         </div>
-        <div class="divine-player-name" id="player-black-name">Player</div>
-        <div class="game-controls">
-          <button class="btn-skill" id="btn-skill" disabled>
-            <span class="skill-icon" id="skill-icon">⚡</span>
-            <span class="skill-name" id="skill-name-display">権能</span>
-          </button>
-        </div>
       </div>
-      <div class="player-timer-box">
+      <div class="info-cell timer-cell">
         <div class="timer-display" id="timer-player">15</div>
-        <button class="btn-surrender" id="btn-surrender">🏳️ 投了</button>
+      </div>
+      <!-- 2行目 (比率2) -->
+      <div class="info-cell mana-cell">
+        <div class="mana-icon">💧</div>
+        <span class="mana-count" id="player-black-mana">2</span>
+      </div>
+      <div class="info-cell skill-cell">
+        <button class="btn-skill" id="btn-skill">
+          <span class="skill-icon" id="skill-icon">⚡</span>
+        </button>
+      </div>
+      <div class="info-cell control-cell">
+        <button class="btn-surrender" id="btn-surrender">🏳️</button>
       </div>
     </div>
   `;
@@ -89,16 +100,16 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   const leaderChar = CHARACTERS[leaderId];
   const leaderUncap = data.characters[leaderId].uncapLevel;
 
-  let opponentId: keyof typeof CHARACTERS;
+  let opponentId: string;
   if (mode === 'ai') {
     const targetRarity = aiLevel === 1 ? 'R' : aiLevel === 2 ? 'SR' : 'SSR';
-    const possibleOpponents = Object.keys(CHARACTERS).filter(id => CHARACTERS[id as keyof typeof CHARACTERS].rarity === targetRarity);
+    const possibleOpponents = Object.keys(CHARACTERS).filter(id => CHARACTERS[id].rarity === targetRarity);
     opponentId = (possibleOpponents.length > 0 
       ? possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)] 
-      : Object.keys(CHARACTERS)[0]) as keyof typeof CHARACTERS;
+      : Object.keys(CHARACTERS)[0]);
   } else {
     const opponentIds = Object.keys(CHARACTERS).filter(id => id !== leaderId);
-    opponentId = opponentIds[Math.floor(Math.random() * opponentIds.length)] as keyof typeof CHARACTERS;
+    opponentId = opponentIds[Math.floor(Math.random() * opponentIds.length)];
   }
   const opponentChar = CHARACTERS[opponentId];
 
@@ -112,15 +123,11 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
 
   // UI初期化
   const blackIcon = document.getElementById('player-black-icon');
-  const blackName = document.getElementById('player-black-name');
   const blackRarity = document.getElementById('player-black-rarity');
   const whiteIcon = document.getElementById('player-white-icon');
-  const whiteName = document.getElementById('player-white-name');
   const whiteRarity = document.getElementById('player-white-rarity');
   const skillIcon = document.getElementById('skill-icon');
-  const skillNameEl = document.getElementById('skill-name-display');
   const skillIconEnemy = document.getElementById('skill-icon-enemy');
-  const skillNameEnemy = document.getElementById('skill-name-enemy');
   const skillBtn = document.getElementById('btn-skill') as HTMLButtonElement;
 
   if (blackIcon) {
@@ -129,7 +136,6 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
     blackIcon.className = `divine-portrait ${leaderChar.imageUrl ? 'has-image' : ''}`;
     if (leaderChar.imageUrl) (blackIcon as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
-  if (blackName) blackName.textContent = leaderChar.name;
   if (blackRarity) {
     blackRarity.textContent = leaderChar.rarity;
     blackRarity.className = `divine-rarity rarity-${leaderChar.rarity.toLowerCase()}`;
@@ -141,28 +147,18 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
     whiteIcon.className = `divine-portrait ${opponentChar.imageUrl ? 'has-image' : ''}`;
     if (opponentChar.imageUrl) (whiteIcon as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
-  if (whiteName) whiteName.textContent = mode === 'ai' ? `CPU(Lv${aiLevel})` : opponentChar.name;
   if (whiteRarity) {
     whiteRarity.textContent = opponentChar.rarity;
     whiteRarity.className = `divine-rarity rarity-${opponentChar.rarity.toLowerCase()}`;
   }
 
-  // スキル表示
+  // スキルアイコン初期化
   if (skillIcon) {
-    const imgUrl = leaderChar.imageUrl ? `${leaderChar.imageUrl}` : '';
     skillIcon.textContent = leaderChar.icon;
-    skillIcon.className = `skill-icon ${leaderChar.imageUrl ? 'has-image' : ''}`;
-    if (leaderChar.imageUrl) (skillIcon as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
-  if (skillNameEl) skillNameEl.textContent = leaderChar.activeSkill.name;
-
   if (skillIconEnemy) {
-    const imgUrl = opponentChar.imageUrl ? `${opponentChar.imageUrl}` : '';
     skillIconEnemy.textContent = opponentChar.icon;
-    skillIconEnemy.className = `skill-icon ${opponentChar.imageUrl ? 'has-image' : ''}`;
-    if (opponentChar.imageUrl) (skillIconEnemy as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
-  if (skillNameEnemy) skillNameEnemy.textContent = opponentChar.activeSkill.name;
 
   // イベント
   gameManager.on('stateChange', (evData) => {
@@ -195,9 +191,9 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   gameManager.on('skillActivated', (evData) => {
     const result = evData as { affectedCells: [number, number][]; message: string };
     let effectType: 'lightning' | 'void' | 'divine' | 'burn' = 'burn';
-    if (leaderId === 'alfred') effectType = 'lightning';
-    else if (leaderId === 'luna') effectType = 'void';
-    else if (leaderId === 'mira') effectType = 'divine';
+    if (leaderId === 'god_zeus') effectType = 'lightning';
+    else if (leaderId === 'god_hades') effectType = 'void';
+    else if (leaderId === 'god_athena') effectType = 'divine';
     
     renderer?.startSkillAnimation(result.affectedCells, leaderChar.color, effectType);
     showMessage(result.message);
@@ -234,12 +230,9 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   canvas.addEventListener('touchend', (e) => { e.preventDefault(); onCanvasTouch(e); });
 
   if (skillBtn) {
-    skillBtn.disabled = false;
-    skillBtn.classList.remove('skill-used');
     const onSkillClick = () => {
-      if (gameManager?.isHumanTurn() && gameManager.activateSkill()) {
-        skillBtn.disabled = true;
-        skillBtn.classList.add('skill-used');
+      if (gameManager?.isHumanTurn()) {
+        gameManager.activateSkill();
       }
     };
     const newSkillBtn = skillBtn.cloneNode(true) as HTMLButtonElement;
@@ -283,6 +276,8 @@ function cleanupGame(): void {
 function updateGameUI(state: GameState): void {
   const blackStones = document.getElementById('player-black-stones');
   const whiteStones = document.getElementById('player-white-stones');
+  const blackMana = document.getElementById('player-black-mana');
+  const whiteMana = document.getElementById('player-white-mana');
   const playerInfo = document.getElementById('game-player-info');
   const enemyInfo = document.getElementById('game-enemy-info');
   const playerSkillBtn = document.getElementById('btn-skill') as HTMLButtonElement;
@@ -298,21 +293,23 @@ function updateGameUI(state: GameState): void {
   if (blackStones) blackStones.textContent = String(bc);
   if (whiteStones) whiteStones.textContent = String(wc);
 
+  if (blackMana) blackMana.textContent = String(state.players[BLACK].mana);
+  if (whiteMana) whiteMana.textContent = String(state.players[WHITE].mana);
+
   playerInfo?.classList.toggle('active-player', state.currentPlayer === BLACK && state.phase === 'playing');
   enemyInfo?.classList.toggle('active-player', state.currentPlayer === WHITE && state.phase === 'playing');
 
-  // 自分のスキルボタン状態
   if (playerSkillBtn) {
-    const used = state.players[BLACK].activeSkillUsed;
-    playerSkillBtn.disabled = used;
-    playerSkillBtn.classList.toggle('skill-used', used);
+    const player = state.players[BLACK];
+    const canUse = player.mana >= player.character.activeSkill.manaCost;
+    playerSkillBtn.disabled = !canUse;
+    playerSkillBtn.classList.toggle('can-use', canUse);
   }
 
-  // 相手のスキルボタン状態
   if (enemySkillBtn) {
-    const used = state.players[WHITE].activeSkillUsed;
-    enemySkillBtn.disabled = used;
-    enemySkillBtn.classList.toggle('skill-used', used);
+    const enemy = state.players[WHITE];
+    const canUse = enemy.mana >= enemy.character.activeSkill.manaCost;
+    enemySkillBtn.classList.toggle('can-use', canUse);
   }
 }
 

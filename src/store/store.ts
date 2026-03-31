@@ -32,11 +32,11 @@ function createDefaultData(): PlayerData {
     characters[id] = { owned: false, uncapLevel: 0 };
   }
   // 初期キャラとしてヘルメスのみを所持
-  characters.zephyr = { owned: true, uncapLevel: 0 };
+  characters.god_hermes = { owned: true, uncapLevel: 0 };
 
   return {
     characters,
-    selectedLeader: 'zephyr',
+    selectedLeader: 'god_hermes',
     currency: 500,
     totalGames: 0,
     totalWins: 0,
@@ -62,14 +62,44 @@ class Store {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw);
-        // マイグレーション: 新キャラが追加された場合
+        let parsed = JSON.parse(raw);
+        
+        // 旧IDから新IDへの簡易的なマイグレーションマップ
+        const migrationMap: Record<string, CharacterId> = {
+          'alfred': 'god_zeus',
+          'luna': 'god_hades',
+          'drake': 'god_ares',
+          'mira': 'god_athena',
+          'zephyr': 'god_hermes',
+          'noir': 'god_artemis',
+        };
+
         const defaults = createDefaultData();
+        const migratedChars = {} as Record<CharacterId, CharacterState>;
+        
+        // 新しいID体系で初期化
         for (const id of CHARACTER_IDS) {
-          if (!parsed.characters[id]) {
-            parsed.characters[id] = defaults.characters[id];
+          migratedChars[id] = { owned: false, uncapLevel: 0 };
+        }
+
+        // 既存データの移行
+        if (parsed.characters) {
+          for (const oldId in parsed.characters) {
+            const newId = migrationMap[oldId];
+            if (newId && CHARACTER_IDS.includes(newId)) {
+              migratedChars[newId] = parsed.characters[oldId];
+            } else if (CHARACTER_IDS.includes(oldId as CharacterId)) {
+              migratedChars[oldId as CharacterId] = parsed.characters[oldId];
+            }
           }
         }
+        parsed.characters = migratedChars;
+
+        // リーダーIDの移行
+        if (migrationMap[parsed.selectedLeader]) {
+          parsed.selectedLeader = migrationMap[parsed.selectedLeader];
+        }
+
         return { ...defaults, ...parsed };
       }
     } catch (e) {
