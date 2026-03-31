@@ -5,6 +5,9 @@
 	flex-direction: column;
 	gap: var(--space-lg);
 	padding-bottom: var(--space-xxl);
+	flex: 1; /* 親の flex コンテナ内で余った領域を埋める */
+	overflow-y: auto; /* コンテンツが溢れた場合にスクロール可能にする */
+	-webkit-overflow-scrolling: touch;
 }
 
 .help-section {

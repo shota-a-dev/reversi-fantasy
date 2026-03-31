@@ -4,7 +4,7 @@ import { screenManager } from './screenManager';
 export function createHelpScreen(): HTMLElement {
   const screen = document.createElement('div');
   screen.id = 'screen-help';
-  screen.className = 'screen screen-scrollable';
+  screen.className = 'screen';
   screen.style.display = 'none';
 
   screen.innerHTML = `
