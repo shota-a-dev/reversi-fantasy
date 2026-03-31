@@ -14,9 +14,7 @@ export function createHomeScreen(): HTMLElement {
     // const data = store.getData();
     // const leader = CHARACTERS[data.selectedLeader];
 
-    // <div class="home-bg">
-    //   <div class="home-particles" id="home-particles"></div>
-    // </div>
+
     // <div class="home-content">
     //   <div class="home-logo">
     //     <h1 class="game-title">神々の対局</h1>
@@ -141,7 +139,9 @@ export function createHomeScreen(): HTMLElement {
     //   </div>
     // </div>
     screen.innerHTML = `
-      <div>test</div>
+    <div class="home-bg">
+      <div class="home-particles" id="home-particles"></div>
+    </div>
     `;
 
     // イベント
