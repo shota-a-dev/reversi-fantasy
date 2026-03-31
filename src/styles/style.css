@@ -14,9 +14,3 @@
 @import "./screens/online.css";
 @import "./screens/result.css";
 @import "./screens/help.css";
-
-/* 4. Responsive & PWA Fixes
-@media (max-width: 380px) {
-  .game-title { font-size: 1.6rem; }
-  .character-grid { grid-template-columns: repeat(2, 1fr); }
-} */
