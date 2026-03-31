@@ -278,6 +278,7 @@ function updateGameUI(state: GameState): void {
   const whiteStones = document.getElementById('player-white-stones');
   const playerInfo = document.getElementById('game-player-info');
   const enemyInfo = document.getElementById('game-enemy-info');
+  const playerSkillBtn = document.getElementById('btn-skill') as HTMLButtonElement;
   const enemySkillBtn = document.getElementById('btn-skill-enemy') as HTMLButtonElement;
 
   let bc = 0, wc = 0;
@@ -292,6 +293,13 @@ function updateGameUI(state: GameState): void {
 
   playerInfo?.classList.toggle('active-player', state.currentPlayer === BLACK && state.phase === 'playing');
   enemyInfo?.classList.toggle('active-player', state.currentPlayer === WHITE && state.phase === 'playing');
+
+  // 自分のスキルボタン状態
+  if (playerSkillBtn) {
+    const used = state.players[BLACK].activeSkillUsed;
+    playerSkillBtn.disabled = used;
+    playerSkillBtn.classList.toggle('skill-used', used);
+  }
 
   // 相手のスキルボタン状態
   if (enemySkillBtn) {
