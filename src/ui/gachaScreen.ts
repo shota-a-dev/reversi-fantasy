@@ -102,7 +102,7 @@ export function createGachaScreen(): HTMLElement {
     }
 
     // アニメーション開始
-    const orb = screen.querySelector('#gacha-orb') as HTMLElement;
+    // const orb = screen.querySelector('#gacha-orb') as HTMLElement;
     const resultPanel = screen.querySelector('#gacha-result') as HTMLElement;
 
     // 結果画像を事前に読み込んで、ネットワーク読み込みによる表示遅延を抑える
