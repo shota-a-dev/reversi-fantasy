@@ -4,13 +4,14 @@
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100%;
+  height: 100%; /* 固定高さにする */
   display: none;
   flex-direction: column;
   padding-top: var(--safe-top);
   padding-bottom: var(--safe-bottom);
   background: var(--color-bg);
   z-index: 10;
+  overflow: hidden; /* デフォルトではスクロール禁止 */
 }
 
 /* スクロールが必要な画面用クラス（必要最小限に） */
