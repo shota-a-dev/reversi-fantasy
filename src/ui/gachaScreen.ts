@@ -105,13 +105,17 @@ export function createGachaScreen(): HTMLElement {
     const orb = screen.querySelector('#gacha-orb') as HTMLElement;
     const resultPanel = screen.querySelector('#gacha-result') as HTMLElement;
 
-    if (orb) {
-      orb.classList.add('gacha-spinning');
-    }
+    // 結果画像を事前に読み込んで、ネットワーク読み込みによる表示遅延を抑える
+    results.forEach(r => {
+      const char = CHARACTERS[r.id];
+      if (char.imageUrl) {
+        const imgPreload = new Image();
+        imgPreload.src = char.imageUrl;
+      }
+    });
 
-    // 演出: 1.5秒後に結果表示
+    // 演出: 短い待ち時間に変更（以前は1.5秒）してUXを改善
     setTimeout(() => {
-      if (orb) orb.classList.remove('gacha-spinning');
 
       if (resultPanel) {
         resultPanel.style.display = 'block';
@@ -136,11 +140,13 @@ export function createGachaScreen(): HTMLElement {
           `;
         };
 
+        const getTapText = (index: number) => index < results.length - 1 ? 'タップして次へ' : 'タップして閉じる';
+
         if (results.length === 1) {
           resultPanel.innerHTML = `
             <div class="gacha-result-overlay" id="gacha-result-overlay">
               ${renderCardHtml(results[0], 0)}
-              <div class="tap-to-close">画面をタップして戻る</div>
+              <div class="tap-to-close">${getTapText(0)}</div>
             </div>
           `;
 
@@ -149,12 +155,12 @@ export function createGachaScreen(): HTMLElement {
             render();
           });
         } else {
-          // 10連など複数ヒット時は単発表示1件ずつを順に表示（タップで次へ）
+          // 10連など複数ヒット時は単発表示1件ずつを順に表示（タップで次へ・最終は閉じる表示）
           let idx = 0;
           resultPanel.innerHTML = `
             <div class="gacha-result-overlay" id="gacha-result-overlay">
               ${renderCardHtml(results[idx], 0)}
-              <div class="tap-to-close">画面をタップして次へ</div>
+              <div class="tap-to-close">${getTapText(idx)}</div>
             </div>
           `;
 
@@ -166,7 +172,7 @@ export function createGachaScreen(): HTMLElement {
               render();
               return;
             }
-            overlay.innerHTML = `${renderCardHtml(results[idx], 0)}<div class="tap-to-close">画面をタップして次へ</div>`;
+            overlay.innerHTML = `${renderCardHtml(results[idx], 0)}<div class="tap-to-close">${getTapText(idx)}</div>`;
           });
         }
       }
@@ -176,7 +182,7 @@ export function createGachaScreen(): HTMLElement {
       if (currencyDisplay) {
         currencyDisplay.innerHTML = `💎 ${store.getCurrency()}`;
       }
-    }, 1500);
+    }, 200);
   };
 
   render();
