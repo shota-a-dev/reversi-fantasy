@@ -195,11 +195,11 @@ canvas {
 }
 
 .btn-surrender {
-  margin-top: 8px;
+  margin-top: 20px;
   background: transparent;
   border: 1px solid var(--color-border);
   color: var(--color-text-dim);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   padding: 4px 12px;
   border-radius: 4px;
   cursor: pointer;
