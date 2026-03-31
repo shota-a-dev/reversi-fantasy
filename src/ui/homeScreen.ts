@@ -4,6 +4,7 @@ import { CHARACTERS } from '../core/characters';
 import { screenManager } from './screenManager';
 import { startGame } from './gameScreen';
 import { audioManager } from '../core/audioManager';
+import { showModal } from './components/modal';
 
 export function createHomeScreen(): HTMLElement {
   const screen = document.createElement('div');
@@ -13,7 +14,6 @@ export function createHomeScreen(): HTMLElement {
   function render() {
     const data = store.getData();
     const leader = CHARACTERS[data.selectedLeader];
-
 
     screen.innerHTML = `
       <div class="home-bg">
@@ -38,7 +38,9 @@ export function createHomeScreen(): HTMLElement {
         </div>
 
         <div class="home-stats">
-          <div class="stat-badge clickable" id="stat-currency">💎 ${data.currency}</div>
+          <div class="stat-badge clickable" id="stat-currency">
+            <span class="currency-icon-small"></span> ${data.currency}
+          </div>
           <div class="stat-badge clickable" id="stat-trophy">🏆 ${data.totalWins}/${data.totalGames}</div>
         </div>
 
@@ -76,82 +78,64 @@ export function createHomeScreen(): HTMLElement {
             </button>
           </div>
         </div>
-
-        </div>
-      </div>
-
-      <!-- 難易度選択モーダル -->
-      <div class="modal-overlay" id="difficulty-modal" style="display: none;">
-        <div class="modal-content difficulty-modal-content">
-          <h2 id="diff-modal-title">⚔️ AI対戦 - 難易度選択</h2>
-          <div id="diff-selection-area">
-            <p>挑戦するレベルを選んでください</p>
-            <div class="difficulty-options">
-              <button class="menu-btn diff-select-btn" data-level="1">
-                <span class="diff-title">初級</span>
-                <span class="diff-desc">初めての方にオススメ (相手: R)</span>
-              </button>
-              <button class="menu-btn diff-select-btn" data-level="2">
-                <span class="diff-title">中級</span>
-                <span class="diff-desc">標準的なAIと勝負 (相手: SR)</span>
-              </button>
-              <button class="menu-btn diff-select-btn" data-level="3">
-                <span class="diff-title">上級</span>
-                <span class="diff-desc">最強のAIに挑戦！ (相手: SSR)</span>
-              </button>
-            </div>
-          </div>
-          <div id="diff-confirm-area" style="display: none; text-align: center;">
-            <p id="diff-confirm-text"></p>
-            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-              <button class="menu-btn menu-btn-primary" id="btn-difficulty-start" style="flex: 1;">対戦開始！</button>
-            </div>
-          </div>
-          <button class="btn-secondary modal-close" id="difficulty-close">閉じる</button>
-        </div>
-      </div>
-
-      <!-- 設定モーダル -->
-      <div class="modal-overlay" id="settings-modal" style="display: none;">
-        <div class="modal-content">
-          <h2>⚙️ 設定</h2>
-          <div class="setting-item">
-            <label>色覚多様性モード</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="setting-colorblind" ${data.settings.colorBlindMode ? 'checked' : ''}>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          <div class="setting-item">
-            <label>デバッグ（ダイヤ+100）</label>
-            <button class="btn-primary" id="btn-debug-currency" style="padding: 4px 12px; font-size: 0.8rem;">追加</button>
-          </div>
-          <div class="setting-item">
-            <label>データリセット</label>
-            <button class="btn-primary" id="btn-reset-data" style="padding: 4px 12px; font-size: 0.8rem;">リセット</button>
-          </div>
-          <button class="btn-secondary modal-close" id="settings-close">閉じる</button>
-        </div>
-      </div>
-
-      <!-- 解説モーダル -->
-      <div class="modal-overlay" id="info-modal" style="display: none;">
-        <div class="modal-content info-modal-content">
-          <h2 id="info-title">解説</h2>
-          <div class="info-body" id="info-body"></div>
-          <button class="btn-secondary modal-close" id="info-close">閉じる</button>
-        </div>
       </div>
     `;
 
-    // イベント
-    screen.querySelector('#btn-ai-battle')?.addEventListener('click', () => {
+    // ─── AI対戦 難易度選択 ───
+    screen.querySelector('#btn-ai-battle')?.addEventListener('click', (e) => {
+      e.stopPropagation();
       audioManager.init();
-      const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
-      if (modal) modal.style.display = 'flex';
+      
+      const difficultyHtml = `
+        <div class="difficulty-options">
+          <button class="menu-btn diff-select-btn" data-level="1">
+            <span class="diff-title">初級</span>
+            <span class="diff-desc">初めての方にオススメ (相手: R)</span>
+          </button>
+          <button class="menu-btn diff-select-btn" data-level="2">
+            <span class="diff-title">中級</span>
+            <span class="diff-desc">標準的なAIと勝負 (相手: SR)</span>
+          </button>
+          <button class="menu-btn diff-select-btn" data-level="3">
+            <span class="diff-title">上級</span>
+            <span class="diff-desc">最強のAIに挑戦！ (相手: SSR)</span>
+          </button>
+        </div>
+      `;
+
+      const modal = showModal({
+        title: '⚔️ 難易度選択',
+        contentHtml: difficultyHtml,
+        cancelText: '戻る'
+      });
+
+      // 難易度ボタンのイベント登録
+      modal.getElement().querySelectorAll('.diff-select-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const level = parseInt(btn.getAttribute('data-level') || '2');
+          const levelNames = ['', '初級', '中級', '上級'];
+          
+          modal.close(); // 一旦閉じて確認用を出す（または中身を書き換える）
+          
+          showModal({
+            title: '⚔️ 対戦確認',
+            message: `難易度: <strong>${levelNames[level]}</strong><br><br>対戦を開始しますか？`,
+            confirmText: '対戦開始！',
+            cancelText: '戻る',
+            onConfirm: () => {
+              store.updateSettings({ aiDifficulty: level });
+              screenManager.navigate('game');
+              setTimeout(() => startGame('ai', level), 100);
+            }
+          });
+        });
+      });
     });
 
-    screen.querySelector('#btn-online-battle')?.addEventListener('click', () => {
+    // オンライン対戦
+    screen.querySelector('#btn-online-battle')?.addEventListener('click', (e) => {
+      e.stopPropagation();
       audioManager.init();
       import('./onlineScreen').then(m => {
         m.initOnlineScreen();
@@ -159,133 +143,101 @@ export function createHomeScreen(): HTMLElement {
       });
     });
 
-    screen.querySelector('#btn-formation')?.addEventListener('click', () => {
+    // 神格
+    screen.querySelector('#btn-formation')?.addEventListener('click', (e) => {
+      e.stopPropagation();
       audioManager.init();
       screenManager.navigate('formation');
     });
 
-    screen.querySelector('#btn-gacha')?.addEventListener('click', () => {
+    // 神託
+    screen.querySelector('#btn-gacha')?.addEventListener('click', (e) => {
+      e.stopPropagation();
       audioManager.init();
       screenManager.navigate('gacha');
     });
 
-    screen.querySelector('#btn-help')?.addEventListener('click', () => {
+    // ヘルプ
+    screen.querySelector('#btn-help')?.addEventListener('click', (e) => {
+      e.stopPropagation();
       screenManager.navigate('help');
     });
 
-    // 難易度選択モーダル
-    let selectedLevel = 2;
-    const diffSelectionArea = screen.querySelector('#diff-selection-area') as HTMLElement;
-    const diffConfirmArea = screen.querySelector('#diff-confirm-area') as HTMLElement;
-    const diffConfirmText = screen.querySelector('#diff-confirm-text') as HTMLElement;
+    // 設定
+    screen.querySelector('#btn-settings')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const data = store.getData();
+      const settingsHtml = `
+        <div class="setting-item">
+          <label>色覚多様性モード</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="setting-colorblind" ${data.settings.colorBlindMode ? 'checked' : ''}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>デバッグ（ダイヤ+100）</label>
+          <button class="btn-primary" id="btn-debug-currency" style="padding: 4px 12px; font-size: 0.8rem;">追加</button>
+        </div>
+        <div class="setting-item">
+          <label>データリセット</label>
+          <button class="btn-primary" id="btn-reset-data" style="padding: 4px 12px; font-size: 0.8rem;">リセット</button>
+        </div>
+      `;
 
-    screen.querySelectorAll('.diff-select-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        selectedLevel = parseInt(btn.getAttribute('data-level') || '2');
-        const levelNames = ['', '初級', '中級', '上級'];
-        
-        if (diffSelectionArea && diffConfirmArea && diffConfirmText) {
-          diffSelectionArea.style.display = 'none';
-          diffConfirmArea.style.display = 'block';
-          diffConfirmText.innerHTML = `難易度: <strong>${levelNames[selectedLevel]}</strong><br><br>対戦を開始しますか？`;
-          (screen.querySelector('#diff-modal-title') as HTMLElement).textContent = '⚔️ 対戦確認';
+      const modal = showModal({
+        title: '⚙️ 設定',
+        contentHtml: settingsHtml,
+        cancelText: '閉じる'
+      });
+
+      const modalEl = modal.getElement();
+      modalEl.querySelector('#setting-colorblind')?.addEventListener('change', (ev) => {
+        store.updateSettings({ colorBlindMode: (ev.target as HTMLInputElement).checked });
+      });
+      modalEl.querySelector('#btn-debug-currency')?.addEventListener('click', () => {
+        store.addCurrency(100);
+        render(); // 画面更新
+        modal.close();
+      });
+      modalEl.querySelector('#btn-reset-data')?.addEventListener('click', () => {
+        if (confirm('全てのデータをリセットしますか？')) {
+          store.reset();
+          render();
+          modal.close();
         }
       });
     });
 
-    screen.querySelector('#btn-difficulty-start')?.addEventListener('click', () => {
-      store.updateSettings({ aiDifficulty: selectedLevel });
-      const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
-      if (modal) modal.style.display = 'none';
-
-      screenManager.navigate('game');
-      setTimeout(() => startGame('ai', selectedLevel), 100);
+    // 通算戦績クリック
+    screen.querySelector('#stat-trophy')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const data = store.getData();
+      showModal({
+        title: '🏆 通算戦績',
+        message: `これまでの対戦成績：<br><strong>${data.totalWins}勝 / ${data.totalGames}戦</strong><br><br>最強のオセロマスターを目指しましょう！`,
+        cancelText: '閉じる',
+        onConfirm: () => {} // OKボタンを出す
+      });
     });
 
-    screen.querySelector('#btn-difficulty-cancel')?.addEventListener('click', () => {
-      if (diffSelectionArea && diffConfirmArea) {
-        diffSelectionArea.style.display = 'block';
-        diffConfirmArea.style.display = 'none';
-        (screen.querySelector('#diff-modal-title') as HTMLElement).textContent = '⚔️ AI対戦 - 難易度選択';
-      }
+    // ダイヤクリック
+    screen.querySelector('#stat-currency')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showModal({
+        title: '神の宝玉',
+        message: 'ガチャを引くために必要な貴重な宝玉です。難易度の高いAIに勝利するとより多く獲得できます。',
+        cancelText: '閉じる'
+      });
     });
 
-    screen.querySelector('#difficulty-close')?.addEventListener('click', () => {
-      const modal = screen.querySelector('#difficulty-modal') as HTMLElement;
-      if (modal) modal.style.display = 'none';
-      // 状態をリセット
-      if (diffSelectionArea && diffConfirmArea) {
-        diffSelectionArea.style.display = 'block';
-        diffConfirmArea.style.display = 'none';
-        (screen.querySelector('#diff-modal-title') as HTMLElement).textContent = '⚔️ AI対戦 - 難易度選択';
-      }
-    });
-
-    // 解説表示
-    const showInfo = (title: string, body: string) => {
-      const modal = screen.querySelector('#info-modal') as HTMLElement;
-      const titleEl = screen.querySelector('#info-title');
-      const bodyEl = screen.querySelector('#info-body');
-      if (modal && titleEl && bodyEl) {
-        titleEl.textContent = title;
-        bodyEl.textContent = body;
-        modal.style.display = 'flex';
-      }
-    };
-
-    screen.querySelector('#stat-currency')?.addEventListener('click', () => {
-      showInfo('💎 ダイヤ', 'ガチャを引くために必要な貴重な宝石です。難易度の高いAIに勝利するとより多く獲得できます。');
-    });
-
-    screen.querySelector('#stat-trophy')?.addEventListener('click', () => {
-      showInfo('🏆 通算戦績', 'これまでの対戦成績（勝利数 / 全試合数）です。最強のオセロマスターを目指しましょう！');
-    });
-
-    screen.querySelector('#info-close')?.addEventListener('click', () => {
-      const modal = screen.querySelector('#info-modal') as HTMLElement;
-      if (modal) modal.style.display = 'none';
-    });
-
-    // 設定モーダル
-    screen.querySelector('#btn-settings')?.addEventListener('click', () => {
-      const modal = screen.querySelector('#settings-modal') as HTMLElement;
-      if (modal) modal.style.display = 'flex';
-    });
-
-    screen.querySelector('#settings-close')?.addEventListener('click', () => {
-      const modal = screen.querySelector('#settings-modal') as HTMLElement;
-      if (modal) modal.style.display = 'none';
-    });
-
-    screen.querySelector('#setting-colorblind')?.addEventListener('change', (e) => {
-      const checked = (e.target as HTMLInputElement).checked;
-      store.updateSettings({ colorBlindMode: checked });
-    });
-
-    screen.querySelector('#btn-debug-currency')?.addEventListener('click', () => {
-      store.addCurrency(100);
-      const statCurrency = screen.querySelector('#stat-currency') as HTMLElement;
-      if (statCurrency) statCurrency.innerHTML = `💎 ${store.getCurrency()}`;
-    });
-
-    screen.querySelector('#btn-reset-data')?.addEventListener('click', () => {
-      if (confirm('全てのデータをリセットしますか？この操作は取り消せません。')) {
-        store.reset();
-        render();
-      }
-    });
-
-    // パーティクル
     initHomeParticles(screen);
   }
 
   render();
 
-  // 画面遷移時に再レンダリング（ホームに戻った時にデータを反映）
   screenManager.onChange((to) => {
-    if (to === 'home') {
-      render();
-    }
+    if (to === 'home') render();
   });
 
   return screen;
@@ -294,7 +246,7 @@ export function createHomeScreen(): HTMLElement {
 function initHomeParticles(screen: HTMLElement): void {
   const container = screen.querySelector('#home-particles');
   if (!container) return;
-
+  container.innerHTML = '';
   for (let i = 0; i < 20; i++) {
     const particle = document.createElement('div');
     particle.className = 'floating-particle';

@@ -55,6 +55,9 @@
   /* Safe Area */
   --safe-top: env(safe-area-inset-top);
   --safe-bottom: env(safe-area-inset-bottom);
+
+  /* Assets */
+  --img-divine-orb: url('/assets/ui/divine-orb.png');
 }
 
 /* ─── Global Reset & Base ───────────────────── */

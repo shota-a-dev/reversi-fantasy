@@ -43,7 +43,7 @@ export function createGachaScreen(): HTMLElement {
       <div class="screen-header">
         <button class="btn-back" id="gacha-back">← 戻る</button>
         <h1 class="screen-title">神託</h1>
-        <div class="currency-badge">💎 ${data.currency} </div>
+        <div class="currency-badge"> ${data.currency} </div>
       </div>
       <div class="gacha-content">
         <div class="gacha-view">
