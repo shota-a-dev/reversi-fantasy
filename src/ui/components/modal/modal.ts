@@ -1,6 +1,8 @@
 /**
  * 共通モーダルコンポーネント
  */
+import './modal.css';
+
 export interface ModalOptions {
   title: string;
   message?: string;
@@ -17,22 +19,25 @@ export class Modal {
   constructor(options: ModalOptions) {
     this.element = document.createElement('div');
     this.element.className = 'modal-overlay';
-    // 初期状態で非表示ではなく、DOMに追加されたら表示される運用
     
-    const confirmText = options.confirmText || 'OK';
+    const confirmText = options.confirmText || '決定';
     const cancelText = options.cancelText || '閉じる';
 
     this.element.innerHTML = `
       <div class="modal-content">
-        <h2>${options.title}</h2>
-        <div class="modal-body-container" style="text-align: center; margin: 1.5rem 0;">
-          ${options.message ? `<p style="color: var(--color-text); line-height: 1.6;">${options.message}</p>` : ''}
-          ${options.contentHtml || ''}
-          <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-            ${options.onConfirm ? `<button class="menu-btn menu-btn-primary" id="modal-confirm-btn" style="flex: 1;">${confirmText}</button>` : ''}
-          </div>
+        <div class="modal-header">
+          <h2>${options.title}</h2>
         </div>
-        <button class="btn-secondary modal-close" id="modal-cancel-btn">${cancelText}</button>
+        
+        <div class="modal-body">
+          ${options.message ? `<p class="modal-message">${options.message}</p>` : ''}
+          ${options.contentHtml || ''}
+        </div>
+
+        <div class="modal-footer">
+          ${options.onConfirm ? `<button class="menu-btn menu-btn-primary" id="modal-confirm-btn">${confirmText}</button>` : ''}
+          <button class="btn-secondary modal-close-btn" id="modal-cancel-btn">${cancelText}</button>
+        </div>
       </div>
     `;
 
@@ -55,7 +60,7 @@ export class Modal {
       this.close();
     });
 
-    // 外側タップで閉じる（オプション的に動作）
+    // 外側タップで閉じる
     this.element.addEventListener('click', (e) => {
       e.stopPropagation();
       if (options.onCancel) options.onCancel();
@@ -64,13 +69,11 @@ export class Modal {
   }
 
   public show(): void {
-    // 既存のモーダルがあれば消す（二重表示防止）
     const existing = document.querySelector('.modal-overlay');
     if (existing && existing.parentNode) {
       existing.parentNode.removeChild(existing);
     }
     document.body.appendChild(this.element);
-    // アニメーション用に一瞬遅らせて表示状態にするなどの処理も可能
     this.element.style.display = 'flex';
   }
 
@@ -80,7 +83,6 @@ export class Modal {
     }
   }
 
-  // 特定のセレクタにイベントを貼りたい場合用
   public getElement(): HTMLElement {
     return this.element;
   }

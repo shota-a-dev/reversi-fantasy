@@ -1,30 +1,48 @@
-import '../styles/screens/gacha.css';
-import { store } from '../store/store';
-import { CHARACTERS } from '../core/characters';
-import type { CharacterId } from '../core/constants';
-import { CHARACTER_IDS, GACHA_COST } from '../core/constants';
-import { screenManager } from './screenManager';
-import { audioManager } from '../core/audioManager';
-import { showModal } from './components/modal';
+import './gacha.css';
+import { store } from '../../store/store';
+import { CHARACTERS } from '../../core/characters';
+import type { CharacterId } from '../../core/constants';
+import { CHARACTER_IDS, GACHA_COST } from '../../core/constants';
+import { screenManager } from '../screenManager';
+import { audioManager } from '../../core/audioManager';
+import { showModal } from '../components/modal/modal';
+
+// ─── ガチャ確率設定 ─────────────────────
+const GACHA_RATES = {
+  SSR: 5,
+  SR: 25,
+  R: 70
+};
 
 // ガチャ排出ロジック
 function rollGacha(): CharacterId {
-  const roll = Math.random();
+  const roll = Math.random() * 100;
   let cumulative = 0;
 
-  // SSR: 10%, SR: 25%, R: 65%
-  const pool: { id: CharacterId; weight: number }[] = CHARACTER_IDS.map(id => {
-    const char = CHARACTERS[id];
-    const weight = char.rarity === 'SSR' ? 0.05 / 2 : char.rarity === 'SR' ? 0.25 / 2 : 0.7 / 2;
-    return { id, weight };
-  });
+  // 各レアリティのキャラプールを作成
+  const ssrPool = CHARACTER_IDS.filter(id => CHARACTERS[id].rarity === 'SSR');
+  const srPool = CHARACTER_IDS.filter(id => CHARACTERS[id].rarity === 'SR');
+  const rPool = CHARACTER_IDS.filter(id => CHARACTERS[id].rarity === 'R');
 
-  for (const entry of pool) {
-    cumulative += entry.weight;
-    if (roll <= cumulative) return entry.id;
+  // SSR判定
+  cumulative += GACHA_RATES.SSR;
+  if (roll <= cumulative && ssrPool.length > 0) {
+    return ssrPool[Math.floor(Math.random() * ssrPool.length)];
   }
 
-  return pool[pool.length - 1].id;
+  // SR判定
+  cumulative += GACHA_RATES.SR;
+  if (roll <= cumulative && srPool.length > 0) {
+    return srPool[Math.floor(Math.random() * srPool.length)];
+  }
+
+  // R判定（フォールバック）
+  if (rPool.length > 0) {
+    return rPool[Math.floor(Math.random() * rPool.length)];
+  }
+
+  // 万が一プールが空の場合の最終手段
+  return CHARACTER_IDS[Math.floor(Math.random() * CHARACTER_IDS.length)];
 }
 
 export function createGachaScreen(): HTMLElement {
@@ -51,9 +69,9 @@ export function createGachaScreen(): HTMLElement {
         </div>
 
         <div class="gacha-rates-table">
-          <span class="rate-item ssr">SSR 10%</span>
-          <span class="rate-item sr">SR 25%</span>
-          <span class="rate-item r">R 65%</span>
+          <span class="rate-item ssr">SSR ${GACHA_RATES.SSR}%</span>
+          <span class="rate-item sr">SR ${GACHA_RATES.SR}%</span>
+          <span class="rate-item r">R ${GACHA_RATES.R}%</span>
         </div>
 
         <div class="gacha-result" id="gacha-result" style="display: none;">
@@ -79,7 +97,7 @@ export function createGachaScreen(): HTMLElement {
       if (isAnimating) return;
       showModal({
         title: '🎰 神託の確認',
-        message: `${count}回召喚を実行しますか？<br><br>消費: 💎 ${GACHA_COST * count}`,
+        message: `${count}回召喚を実行しますか？<br><br>消費: <span class="currency-icon-small"></span> ${GACHA_COST * count}`,
         confirmText: '召喚する！',
         cancelText: 'キャンセル',
         onConfirm: () => performGacha(count)
@@ -107,7 +125,6 @@ export function createGachaScreen(): HTMLElement {
     // アニメーション開始
     const resultPanel = screen.querySelector('#gacha-result') as HTMLElement;
 
-    // 結果画像を事前に読み込んで、ネットワーク読み込みによる表示遅延を抑える
     results.forEach(r => {
       const char = CHARACTERS[r.id];
       if (char.imageUrl) {
@@ -116,7 +133,6 @@ export function createGachaScreen(): HTMLElement {
       }
     });
 
-    // 演出: 短い待ち時間
     setTimeout(() => {
       if (resultPanel) {
         resultPanel.style.display = 'block';
@@ -156,7 +172,6 @@ export function createGachaScreen(): HTMLElement {
             render();
           });
         } else {
-          // 10連など複数ヒット時は単発表示1件ずつを順に表示
           let idx = 0;
           resultPanel.innerHTML = `
             <div class="gacha-result-overlay" id="gacha-result-overlay">
@@ -178,10 +193,9 @@ export function createGachaScreen(): HTMLElement {
         }
       }
 
-      // 通貨表示更新
       const currencyDisplay = screen.querySelector('.currency-badge');
       if (currencyDisplay) {
-        currencyDisplay.innerHTML = `💎 ${store.getCurrency()}`;
+        currencyDisplay.innerHTML = `${store.getCurrency()}`;
       }
     }, 200);
   };

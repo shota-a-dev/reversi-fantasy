@@ -51,14 +51,15 @@
 }
 
 .gacha-orb-image {
-  width: 100%;
-  height: 100%;
-  background-image: url('/assets/ui/gacha-orb.png');
+  width: 200px;
+  height: 200px;
+  background-image: var(--img-divine-orb);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   filter: drop-shadow(0 0 30px rgba(162, 155, 254, 0.5));
 }
+
 
 /* ─── Gacha Results ───────────────────── */
 .gacha-result {

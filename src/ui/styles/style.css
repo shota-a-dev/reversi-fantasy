@@ -1,0 +1,16 @@
+/* ─── Main Hub Stylesheet ───────────────────── */
+
+/* 1. Base (Variables & Reset) */
+@import "./base.css";
+
+/* 2. Common (Shared UI Components & Animations) */
+@import "./common.css";
+
+/* 3. Global Component Styles */
+@import "../components/modal/modal.css";
+
+/* 4. Responsive Fixes */
+@media (max-width: 380px) {
+  .game-title { font-size: 1.6rem; }
+  .character-grid { grid-template-columns: repeat(2, 1fr); }
+}

@@ -1,11 +1,11 @@
-import './styles/style.css';
-import { createHomeScreen } from './ui/homeScreen';
-import { createFormationScreen } from './ui/formationScreen';
-import { createGachaScreen } from './ui/gachaScreen';
-import { createGameScreen } from './ui/gameScreen';
-import { createResultScreen } from './ui/resultScreen';
-import { createHelpScreen } from './ui/helpScreen';
-import { createOnlineScreen } from './ui/onlineScreen';
+import './ui/styles/style.css';
+import { createHomeScreen } from './ui/homeScreen/homeScreen';
+import { createFormationScreen } from './ui/formationScreen/formationScreen';
+import { createGachaScreen } from './ui/gachaScreen/gachaScreen';
+import { createGameScreen } from './ui/gameScreen/gameScreen';
+import { createResultScreen } from './ui/resultScreen/resultScreen';
+import { createHelpScreen } from './ui/helpScreen/helpScreen';
+import { createOnlineScreen } from './ui/onlineScreen/onlineScreen';
 
 // ─── App Initialization ─────
 function initApp(): void {

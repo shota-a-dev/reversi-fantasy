@@ -1,10 +1,10 @@
-import '../styles/screens/formation.css';
-import { store } from '../store/store';
-import { CHARACTERS } from '../core/characters';
-import type { CharacterId } from '../core/constants';
-import { CHARACTER_IDS } from '../core/constants';
-import { screenManager } from './screenManager';
-import { showCharacterDetail } from './formationDetail';
+import './formation.css';
+import { store } from '../../store/store';
+import { CHARACTERS } from '../../core/characters';
+import type { CharacterId } from '../../core/constants';
+import { CHARACTER_IDS } from '../../core/constants';
+import { screenManager } from '../screenManager';
+import { showCharacterDetail } from '../formationDetail/formationDetail';
 
 export function createFormationScreen(): HTMLElement {
   const screen = document.createElement('div');

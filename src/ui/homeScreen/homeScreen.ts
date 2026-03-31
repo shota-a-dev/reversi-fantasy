@@ -1,10 +1,10 @@
-import '../styles/screens/home.css';
-import { store } from '../store/store';
-import { CHARACTERS } from '../core/characters';
-import { screenManager } from './screenManager';
-import { startGame } from './gameScreen';
-import { audioManager } from '../core/audioManager';
-import { showModal } from './components/modal';
+import './home.css';
+import { store } from '../../store/store';
+import { CHARACTERS } from '../../core/characters';
+import { screenManager } from '../screenManager';
+import { startGame } from '../gameScreen/gameScreen';
+import { audioManager } from '../../core/audioManager';
+import { showModal } from '../components/modal/modal';
 
 export function createHomeScreen(): HTMLElement {
   const screen = document.createElement('div');
@@ -82,7 +82,7 @@ export function createHomeScreen(): HTMLElement {
     `;
 
     // ─── AI対戦 難易度選択 ───
-    screen.querySelector('#btn-ai-battle')?.addEventListener('click', (e) => {
+    screen.querySelector('#btn-ai-battle')?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       audioManager.init();
       
@@ -110,13 +110,13 @@ export function createHomeScreen(): HTMLElement {
       });
 
       // 難易度ボタンのイベント登録
-      modal.getElement().querySelectorAll('.diff-select-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+      modal.getElement().querySelectorAll<HTMLElement>('.diff-select-btn').forEach((btn: HTMLElement) => {
+        btn.addEventListener('click', (e: Event) => {
           e.stopPropagation();
           const level = parseInt(btn.getAttribute('data-level') || '2');
           const levelNames = ['', '初級', '中級', '上級'];
           
-          modal.close(); // 一旦閉じて確認用を出す（または中身を書き換える）
+          modal.close(); 
           
           showModal({
             title: '⚔️ 対戦確認',
@@ -134,37 +134,37 @@ export function createHomeScreen(): HTMLElement {
     });
 
     // オンライン対戦
-    screen.querySelector('#btn-online-battle')?.addEventListener('click', (e) => {
+    screen.querySelector('#btn-online-battle')?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       audioManager.init();
-      import('./onlineScreen').then(m => {
+      import('../onlineScreen/onlineScreen').then(m => {
         m.initOnlineScreen();
         screenManager.navigate('online');
       });
     });
 
     // 神格
-    screen.querySelector('#btn-formation')?.addEventListener('click', (e) => {
+    screen.querySelector('#btn-formation')?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       audioManager.init();
       screenManager.navigate('formation');
     });
 
     // 神託
-    screen.querySelector('#btn-gacha')?.addEventListener('click', (e) => {
+    screen.querySelector('#btn-gacha')?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       audioManager.init();
       screenManager.navigate('gacha');
     });
 
     // ヘルプ
-    screen.querySelector('#btn-help')?.addEventListener('click', (e) => {
+    screen.querySelector('#btn-help')?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       screenManager.navigate('help');
     });
 
     // 設定
-    screen.querySelector('#btn-settings')?.addEventListener('click', (e) => {
+    screen.querySelector('#btn-settings')?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       const data = store.getData();
       const settingsHtml = `
@@ -176,7 +176,7 @@ export function createHomeScreen(): HTMLElement {
           </label>
         </div>
         <div class="setting-item">
-          <label>デバッグ（ダイヤ+100）</label>
+          <label>デバッグ（宝玉+100）</label>
           <button class="btn-primary" id="btn-debug-currency" style="padding: 4px 12px; font-size: 0.8rem;">追加</button>
         </div>
         <div class="setting-item">
@@ -192,13 +192,14 @@ export function createHomeScreen(): HTMLElement {
       });
 
       const modalEl = modal.getElement();
-      modalEl.querySelector('#setting-colorblind')?.addEventListener('change', (ev) => {
+      modalEl.querySelector('#setting-colorblind')?.addEventListener('change', (ev: Event) => {
         store.updateSettings({ colorBlindMode: (ev.target as HTMLInputElement).checked });
       });
       modalEl.querySelector('#btn-debug-currency')?.addEventListener('click', () => {
         store.addCurrency(100);
-        render(); // 画面更新
-        modal.close();
+        // ホーム画面の通貨表示を直接更新
+        const currencyEl = screen.querySelector('#stat-currency');
+        if (currencyEl) currencyEl.innerHTML = `<span class="currency-icon-small"></span> ${store.getCurrency()}`;
       });
       modalEl.querySelector('#btn-reset-data')?.addEventListener('click', () => {
         if (confirm('全てのデータをリセットしますか？')) {
@@ -210,19 +211,18 @@ export function createHomeScreen(): HTMLElement {
     });
 
     // 通算戦績クリック
-    screen.querySelector('#stat-trophy')?.addEventListener('click', (e) => {
+    screen.querySelector('#stat-trophy')?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       const data = store.getData();
       showModal({
         title: '🏆 通算戦績',
         message: `これまでの対戦成績：<br><strong>${data.totalWins}勝 / ${data.totalGames}戦</strong><br><br>最強のオセロマスターを目指しましょう！`,
-        cancelText: '閉じる',
-        onConfirm: () => {} // OKボタンを出す
+        cancelText: '閉じる'
       });
     });
 
     // ダイヤクリック
-    screen.querySelector('#stat-currency')?.addEventListener('click', (e) => {
+    screen.querySelector('#stat-currency')?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       showModal({
         title: '神の宝玉',

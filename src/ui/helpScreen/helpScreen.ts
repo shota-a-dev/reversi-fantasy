@@ -1,5 +1,5 @@
-import '../styles/screens/help.css';
-import { screenManager } from './screenManager';
+import './help.css';
+import { screenManager } from '../screenManager';
 
 export function createHelpScreen(): HTMLElement {
   const screen = document.createElement('div');

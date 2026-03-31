@@ -29,6 +29,22 @@
   border: 1px dashed var(--color-primary);
 }
 
+.btn-copy-icon {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-copy-icon:active {
+  transform: scale(0.9);
+}
+
 .online-status {
   text-align: center;
   padding: var(--space-md);

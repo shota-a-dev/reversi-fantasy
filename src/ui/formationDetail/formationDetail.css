@@ -1,43 +1,4 @@
-/* Formation / character list styles */
-.formation-content {
-  padding: var(--space-lg) var(--space-md);
-  height: 100%;
-}
-
-.character-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-md);
-  padding-bottom: var(--space-xxl);
-}
-
-.char-card {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-md);
-  padding: var(--space-sm);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-xs);
-  border: 1px solid var(--color-border);
-  transition: all 0.2s;
-}
-
-.char-card.owned { cursor: pointer; }
-.char-card.owned:active { transform: scale(0.95); }
-.char-card.selected { box-shadow: var(--shadow-gold); border-color: var(--color-gold); background: rgba(241, 196, 15, 0.05); }
-
-.char-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-}
-
-/* ─── Detail Modal ───────────────────── */
+/* Formation Detail Modal & Preview Styles */
 .detail-modal-overlay {
   position: fixed;
   inset: 0;
@@ -80,7 +41,6 @@
 .detail-scroll-area::-webkit-scrollbar { width: 4px; }
 .detail-scroll-area::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
 
-/* Modal detail content */
 .detail-header {
   display: flex;
   align-items: center;

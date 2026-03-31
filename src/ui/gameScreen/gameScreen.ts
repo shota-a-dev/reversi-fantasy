@@ -1,14 +1,14 @@
-import '../styles/screens/game.css';
-import { store } from '../store/store';
-import { CHARACTERS } from '../core/characters';
-import { BLACK, WHITE } from '../core/constants';
-import type { CellState } from '../core/constants';
-import { GameManager } from '../core/gameManager';
-import type { GameState, GameMode } from '../core/gameManager';
-import { BoardRenderer } from '../render/boardRenderer';
-import { screenManager } from './screenManager';
-import { showResultScreen } from './resultScreen.ts';
-import { showModal } from './components/modal';
+import './game.css';
+import { store } from '../../store/store';
+import { CHARACTERS } from '../../core/characters';
+import { BLACK, WHITE } from '../../core/constants';
+import type { CellState } from '../../core/constants';
+import { GameManager } from '../../core/gameManager';
+import type { GameState, GameMode } from '../../core/gameManager';
+import { BoardRenderer } from '../../render/boardRenderer';
+import { screenManager } from '../screenManager';
+import { showResultScreen } from '../resultScreen/resultScreen';
+import { showModal } from '../components/modal/modal';
 
 let gameManager: GameManager | null = null;
 let renderer: BoardRenderer | null = null;

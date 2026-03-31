@@ -1,6 +1,7 @@
-import { CHARACTERS } from '../core/characters';
-import { store } from '../store/store';
-import type { CharacterId } from '../core/constants';
+import './formationDetail.css';
+import { CHARACTERS } from '../../core/characters';
+import { store } from '../../store/store';
+import type { CharacterId } from '../../core/constants';
 
 /**
  * キャラ詳細画面を表示する
