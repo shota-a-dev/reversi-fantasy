@@ -29,7 +29,7 @@ function rollGacha(): CharacterId {
 export function createGachaScreen(): HTMLElement {
   const screen = document.createElement('div');
   screen.id = 'screen-gacha';
-  screen.className = 'screen screen-scrollable';
+  screen.className = 'screen';
   screen.style.display = 'none';
 
   let isAnimating = false;

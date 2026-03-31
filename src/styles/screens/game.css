@@ -1,53 +1,102 @@
-/* ─── Game Screen ───────────────────── */
-.game-container {
+/* ─── Game Screen Redesign (25/50/25) ───────────────────── */
+#screen-game {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  height: 100%;
   background: var(--color-bg-deep);
   position: relative;
   overflow: hidden;
 }
 
-.board-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-md);
-  position: relative;
-  z-index: 1;
-}
-
-canvas {
-  max-width: 100%;
-  max-height: 100%;
-  touch-action: none;
-  filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
-}
-
-/* ─── Divine Game Screen Header ───────────────────── */
-.game-header {
+/* 敵情報 (25%) */
+.game-enemy {
+  height: 25%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-md);
-  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
-  border-bottom: 2px solid var(--color-gold);
-  min-height: 120px;
+  padding: 0 var(--space-lg);
+  background: linear-gradient(180deg, rgba(255, 0, 0, 0.1) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.divine-vs-player {
+/* 盤面 (50%) */
+.board-container {
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm);
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* 自分情報 (25%) */
+.game-player {
+  height: 25%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-lg);
+  background: linear-gradient(0deg, rgba(0, 210, 211, 0.1) 0%, transparent 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+canvas {
+  max-width: 95vmin;
+  max-height: 95vmin;
+  aspect-ratio: 1 / 1;
+  touch-action: none;
+  filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+}
+
+/* 共通ボックススタイル */
+.player-stones-box, .player-timer-box {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-xs);
-  flex: 1;
+  justify-content: center;
+  gap: 4px;
 }
 
+.player-portrait-box {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* 石アイコン */
+.stone-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stone-black {
+  background: radial-gradient(circle at 30% 30%, #444, #000);
+}
+
+.stone-white {
+  background: radial-gradient(circle at 30% 30%, #fff, #ccc);
+}
+
+.stone-count {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--color-gold);
+  text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+}
+
+/* ポートレート */
 .divine-portrait-wrapper {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border-radius: var(--radius-md);
   border: 2px solid var(--color-gold);
   box-shadow: 0 0 15px rgba(241, 196, 15, 0.3);
@@ -63,7 +112,138 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: 2rem;
+}
+
+.divine-player-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-bright);
+  max-width: 100px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* タイマー */
+.timer-display {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--color-secondary);
+  text-shadow: 0 0 15px rgba(0, 210, 211, 0.4);
+}
+
+.timer-critical {
+  color: var(--color-accent);
+  animation: timerPulse 0.5s infinite alternate;
+}
+
+@keyframes timerPulse {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* アクティブプレイヤー強調 */
+.active-player {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 20px rgba(241, 196, 15, 0.1);
+}
+
+.active-player .divine-portrait-wrapper {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 20px rgba(0, 210, 211, 0.5);
+}
+
+/* ボタン類 */
+.game-controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-skill {
+  background: linear-gradient(135deg, var(--color-primary), #6c5ce7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.btn-skill:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
+}
+
+.btn-skill:disabled {
+  filter: grayscale(1);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-skill-enemy {
+  pointer-events: none; /* 相手のボタンはクリック不可 */
+}
+
+.skill-used {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.btn-surrender {
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-dim);
+  font-size: 0.7rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-surrender:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border-color: white;
+}
+
+/* メッセージ表示 (はみ出し修正) */
+.game-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90%; /* 画面幅いっぱいに広がらないよう制限 */
+  max-width: 400px;
+  transform: translate(-50%, -50%) scale(0.5);
+  background: rgba(0, 0, 0, 0.85);
+  color: var(--color-gold);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-gold);
+  font-weight: 900;
+  font-size: 1.2rem;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-align: center;
+  word-wrap: break-word; /* 長いテキストの折り返し */
+  white-space: normal; /* 折り返しを許可 */
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.game-message.message-show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .divine-rarity {
@@ -71,211 +251,12 @@ canvas {
   bottom: 0;
   width: 100%;
   text-align: center;
-  background: rgba(0,0,0,0.7);
-  font-size: 0.6rem;
-  font-weight: 800;
-  padding: 2px 0;
-}
-
-.divine-player-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.divine-player-name {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--color-text-bright);
-  text-shadow: 0 1px 3px black;
-}
-
-.divine-stone-badge {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 2px 10px;
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--color-gold);
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-}
-
-.divine-vs-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 var(--space-md);
-  gap: 4px;
-}
-
-.vs-label {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
+  background: rgba(0,0,0,0.8);
+  font-size: 0.5rem;
   font-weight: 900;
-  color: var(--color-gold);
-  font-style: italic;
-  text-shadow: 0 0 10px var(--color-gold);
+  padding: 1px 0;
 }
 
-.timer-display {
-  font-family: 'Courier New', monospace;
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--color-secondary);
-  text-shadow: 0 0 10px rgba(0, 210, 211, 0.5);
-}
-
-.timer-critical {
-  color: var(--color-accent);
-  animation: pulseColor 0.5s infinite alternate;
-}
-
-@keyframes pulseColor {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0.7; transform: scale(1.1); }
-}
-
-.turn-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-/* ─── Game UI Footer ───────────────────── */
-.game-footer {
-  padding: var(--space-md) var(--space-lg) var(--space-xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
-  z-index: 10;
-}
-
-.game-controls {
-  display: flex;
-  gap: var(--space-md);
-  align-items: center;
-}
-
-.btn-skill {
-  flex: 2;
-  background: linear-gradient(135deg, #f1c40f, #e67e22);
-  border: 2px solid #fff;
-  color: #000;
-  border-radius: var(--radius-md);
-  padding: var(--space-sm) var(--space-xl);
-  font-weight: 900;
-  font-size: 1.1rem;
-  box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
-  animation: glowPulse 2s infinite alternate;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-secondary {
-  flex: 1;
-  padding: var(--space-sm) var(--space-md);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-dim);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--color-text-bright);
-}
-
-@keyframes glowPulse {
-  from { box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
-  to { box-shadow: 0 0 30px rgba(241, 196, 15, 0.8); }
-}
-
-.btn-skill:disabled {
-  background: #333;
-  border-color: #555;
-  color: #777;
-  animation: none;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-/* ─── Difficulty Selection Modal ───────────────────── */
-.difficulty-modal-content {
-  max-width: 400px;
-  width: 90%;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-primary);
-  box-shadow: 0 0 30px rgba(108, 92, 231, 0.4);
-}
-
-.difficulty-options {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin: 1.5rem 0;
-  width: 100%;
-}
-
-.diff-select-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.2rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.diff-select-btn:hover {
-  background: var(--color-bg-card-hover);
-  border-color: var(--color-primary);
-  transform: translateY(-2px);
-}
-
-.diff-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--color-text-bright);
-}
-
-.diff-desc {
-  font-size: 0.8rem;
-  color: var(--color-text-dim);
-  margin-top: 4px;
-}
-
-/* Game Message */
-.game-message {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.5);
-  background: rgba(0, 0, 0, 0.8);
-  color: var(--color-gold);
-  padding: var(--space-md) var(--space-xl);
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-gold);
-  font-weight: 800;
-  font-size: 1.2rem;
-  z-index: 100;
-  pointer-events: none;
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.game-message.message-show {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
+.rarity-ssr { color: var(--color-ssr); }
+.rarity-sr { color: var(--color-sr); }
+.rarity-r { color: var(--color-r); }
