@@ -51,34 +51,9 @@
 # 依頼事項
 
 ## 修正依頼
-- 以下のコメントが出ているので修正してください。エラーが無くなったことを確認して完了報告してください。
-[{
-	"resource": "/c:/00_Local/20_Dev/10_Projects/2026/08_reversi-fantasy/tsconfig.json",
-	"owner": "typescript",
-	"severity": 8,
-	"message": "'node' の型定義ファイルが見つかりません。\n  ファイルがプログラム内に存在します。理由:\n    compilerOptions で指定されたタイプ ライブラリ 'node' のエントリ ポイント",
-	"source": "ts",
-	"startLineNumber": 1,
-	"startColumn": 1,
-	"endLineNumber": 1,
-	"endColumn": 2,
-	"origin": "extHost1"
-}]
-[{
-	"resource": "/c:/00_Local/20_Dev/10_Projects/2026/08_reversi-fantasy/vite.config.ts",
-	"owner": "typescript",
-	"code": "2307",
-	"severity": 8,
-	"message": "モジュール 'child_process' またはそれに対応する型宣言が見つかりません。",
-	"source": "ts",
-	"startLineNumber": 2,
-	"startColumn": 26,
-	"endLineNumber": 2,
-	"endColumn": 41,
-	"modelVersionId": 4,
-	"origin": "extHost1"
-}]
+- 
 
 ## 質問事項
 以下は質問になるので修正は行わないこと。修正案の提示までとすること。
-
+- iPhoneでホーム画面に追加して開くと、画面上部が少し空きます。これは何が原因かわかりますか？ブラウザで開いたときは問題なくきれいに表示されています。safty何とかが影響している？
+- 対戦画面（オセロ）で画面から要素がはみ出ています。画面内に収めるために、まずは対戦画面の構成を考えてください。要件はレスポンシブデザインを考慮し、画面全体に対する比率で要素のサイズを設定したいです。
