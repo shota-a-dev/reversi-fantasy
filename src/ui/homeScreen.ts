@@ -127,7 +127,7 @@ export function createHomeScreen(): HTMLElement {
           </div>
           <div class="setting-item">
             <label>データリセット</label>
-            <button class="btn-primary" id="btn-reset-data" style="padding: 4px 12px; font-size: 0.8rem; background: var(--color-accent) !important;">リセット</button>
+            <button class="btn-primary" id="btn-reset-data" style="padding: 4px 12px; font-size: 0.8rem;">リセット</button>
           </div>
           <button class="btn-secondary modal-close" id="settings-close">閉じる</button>
         </div>
@@ -263,7 +263,8 @@ export function createHomeScreen(): HTMLElement {
 
     screen.querySelector('#btn-debug-currency')?.addEventListener('click', () => {
       store.addCurrency(100);
-      render();
+      const statCurrency = screen.querySelector('#stat-currency') as HTMLElement;
+      if (statCurrency) statCurrency.innerHTML = `💎 ${store.getCurrency()}`;
     });
 
     screen.querySelector('#btn-reset-data')?.addEventListener('click', () => {

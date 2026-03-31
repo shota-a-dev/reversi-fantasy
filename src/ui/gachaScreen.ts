@@ -111,50 +111,73 @@ export function createGachaScreen(): HTMLElement {
 
     // 演出: 1.5秒後に結果表示
     setTimeout(() => {
-    if (orb) orb.classList.remove('gacha-spinning');
+      if (orb) orb.classList.remove('gacha-spinning');
 
-    if (resultPanel) {
-      resultPanel.style.display = 'block';
-      resultPanel.innerHTML = `
-        <div class="gacha-result-overlay" id="gacha-result-overlay">
-          <div class="gacha-result-cards ${results.length > 1 ? 'grid-ten' : 'single-card'}">
-            ${results.map(r => {
-              const char = CHARACTERS[r.id];
-              const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
-              return `
-                <div class="gacha-result-card ${r.isNew ? 'new-char' : 'dupe-char'} rarity-${char.rarity.toLowerCase()}-bg"
-                     style="animation-delay: ${results.indexOf(r) * 0.1}s">
-                  <div class="result-rarity">${char.rarity}</div>
-                  <div class="result-image-container">
-                    <div class="result-icon ${char.imageUrl ? 'has-image' : ''}" 
-                         style="background-image: ${char.imageUrl ? `url(${imgUrl})` : 'none'}; background-color: ${char.imageUrl ? 'transparent' : `${char.color}44`}">
-                      ${char.imageUrl ? '' : char.icon}
-                    </div>
-                  </div>
-                  <div class="result-name">${char.name}</div>
-                  <div class="result-status">
-                    ${r.isNew ? '<span class="new-badge">NEW!</span>' : `<span class="dupe-badge">凸${r.uncapLevel}</span>`}
-                  </div>
+      if (resultPanel) {
+        resultPanel.style.display = 'block';
+
+        const renderCardHtml = (r: { id: CharacterId; isNew: boolean; uncapLevel: number }, animDelay = 0) => {
+          const char = CHARACTERS[r.id];
+          const imgUrl = char.imageUrl ? `${char.imageUrl}` : '';
+          return `
+            <div class="gacha-result-cards single-card">
+              <div class="gacha-result-card ${r.isNew ? 'new-char' : 'dupe-char'} rarity-${char.rarity.toLowerCase()}-bg"
+                   style="animation-delay: ${animDelay}s">
+                <div class="result-rarity">${char.rarity}</div>
+                <div class="result-image-container">
+                  ${char.imageUrl ? `<img class="result-img" src="${imgUrl}" alt="${char.name}">` : `<div class="result-icon" style="background-color: ${char.color}44">${char.icon}</div>`}
                 </div>
-              `;
-            }).join('')}
-          </div>
-          <div class="tap-to-close">画面をタップして戻る</div>
-        </div>
-      `;
+                <div class="result-name">${char.name}</div>
+                <div class="result-status">
+                  ${r.isNew ? '<span class="new-badge">NEW!</span>' : `<span class="dupe-badge">凸${r.uncapLevel}</span>`}
+                </div>
+              </div>
+            </div>
+          `;
+        };
 
-      resultPanel.querySelector('#gacha-result-overlay')?.addEventListener('click', () => {
-        isAnimating = false;
-        render();
-      });
-    }
+        if (results.length === 1) {
+          resultPanel.innerHTML = `
+            <div class="gacha-result-overlay" id="gacha-result-overlay">
+              ${renderCardHtml(results[0], 0)}
+              <div class="tap-to-close">画面をタップして戻る</div>
+            </div>
+          `;
 
-    // 通貨表示更新（アイコンを維持）
-    const currencyDisplay = screen.querySelector('.currency-badge');
-    if (currencyDisplay) {
-      currencyDisplay.innerHTML = `💎 ${store.getCurrency()}`;
-    }
-    }, 1500);  };
+          resultPanel.querySelector('#gacha-result-overlay')?.addEventListener('click', () => {
+            isAnimating = false;
+            render();
+          });
+        } else {
+          // 10連など複数ヒット時は単発表示1件ずつを順に表示（タップで次へ）
+          let idx = 0;
+          resultPanel.innerHTML = `
+            <div class="gacha-result-overlay" id="gacha-result-overlay">
+              ${renderCardHtml(results[idx], 0)}
+              <div class="tap-to-close">画面をタップして次へ</div>
+            </div>
+          `;
+
+          const overlay = resultPanel.querySelector('#gacha-result-overlay') as HTMLElement;
+          overlay?.addEventListener('click', () => {
+            idx++;
+            if (idx >= results.length) {
+              isAnimating = false;
+              render();
+              return;
+            }
+            overlay.innerHTML = `${renderCardHtml(results[idx], 0)}<div class="tap-to-close">画面をタップして次へ</div>`;
+          });
+        }
+      }
+
+      // 通貨表示更新（アイコンを維持）
+      const currencyDisplay = screen.querySelector('.currency-badge');
+      if (currencyDisplay) {
+        currencyDisplay.innerHTML = `💎 ${store.getCurrency()}`;
+      }
+    }, 1500);
+  };
 
   render();
   return screen;
