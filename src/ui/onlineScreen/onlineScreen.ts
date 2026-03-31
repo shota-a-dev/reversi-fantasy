@@ -1,7 +1,6 @@
 import './online.css';
 import { screenManager } from '../screenManager';
 import { onlineManager } from '../../core/onlineManager';
-import { store } from '../../store/store';
 import { startGame } from '../gameScreen/gameScreen';
 
 export function createOnlineScreen(): HTMLElement {
