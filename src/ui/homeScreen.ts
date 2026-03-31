@@ -1,6 +1,6 @@
 import '../styles/screens/home.css';
 import { store } from '../store/store';
-import { CHARACTERS } from '../core/characters';
+// import { CHARACTERS } from '../core/characters';
 import { screenManager } from './screenManager';
 import { startGame } from './gameScreen';
 import { audioManager } from '../core/audioManager';
@@ -11,136 +11,137 @@ export function createHomeScreen(): HTMLElement {
   screen.className = 'screen screen-active';
 
   function render() {
-    const data = store.getData();
-    const leader = CHARACTERS[data.selectedLeader];
+    // const data = store.getData();
+    // const leader = CHARACTERS[data.selectedLeader];
 
     // <div class="home-bg">
     //   <div class="home-particles" id="home-particles"></div>
     // </div>
+    // <div class="home-content">
+    //   <div class="home-logo">
+    //     <h1 class="game-title">神々の対局</h1>
+    //     <p class="game-subtitle">- Duel of Deities -</p>
+    //     <div class="game-version">${__APP_VERSION__}</div>
+    //   </div>
+
+    //   <div class="home-leader-display">
+    //     <div class="home-leader-icon ${leader.imageUrl ? 'has-image' : ''}" 
+    //          style="background: ${leader.imageUrl ? `url(${leader.imageUrl})` : `linear-gradient(135deg, ${leader.color}66, ${leader.color})`}">
+    //       ${leader.icon}
+    //     </div>
+    //     <div class="home-leader-info">
+    //       <span class="home-leader-name">${leader.name}</span>
+    //       <span class="home-leader-title">${leader.title}</span>
+    //     </div>
+    //   </div>
+
+    //   <div class="home-stats">
+    //     <div class="stat-badge clickable" id="stat-currency">💎 ${data.currency}</div>
+    //     <div class="stat-badge clickable" id="stat-trophy">🏆 ${data.totalWins}/${data.totalGames}</div>
+    //   </div>
+
+    //   <div class="home-menu">
+    //     <div class="menu-row">
+    //       <button class="menu-btn menu-btn-primary" id="btn-ai-battle">
+    //         <span class="menu-icon">⚔️</span>
+    //         <span class="menu-text">AI対戦</span>
+    //       </button>
+    //       <button class="menu-btn menu-btn-primary" id="btn-online-battle">
+    //         <span class="menu-icon">🌐</span>
+    //         <span class="menu-text">オンライン対戦</span>
+    //       </button>
+    //     </div>
+        
+    //     <div class="menu-row">
+    //       <button class="menu-btn menu-btn-divine" id="btn-formation">
+    //         <span class="menu-icon">👥</span>
+    //         <span class="menu-text">神格</span>
+    //       </button>
+    //       <button class="menu-btn menu-btn-divine" id="btn-gacha">
+    //         <span class="menu-icon">🎰</span>
+    //         <span class="menu-text">神託</span>
+    //       </button>
+    //     </div>
+
+    //     <div class="menu-row">
+    //       <button class="menu-btn menu-btn-tertiary" id="btn-help">
+    //         <span class="menu-icon">📖</span>
+    //         <span class="menu-text">ヘルプ</span>
+    //       </button>
+    //       <button class="menu-btn menu-btn-tertiary" id="btn-settings">
+    //         <span class="menu-icon">⚙️</span>
+    //         <span class="menu-text">設定</span>
+    //       </button>
+    //     </div>
+    //   </div>
+
+    //   </div>
+    // </div>
+
+    // <!-- 難易度選択モーダル -->
+    // <div class="modal-overlay" id="difficulty-modal" style="display: none;">
+    //   <div class="modal-content difficulty-modal-content">
+    //     <h2 id="diff-modal-title">⚔️ AI対戦 - 難易度選択</h2>
+    //     <div id="diff-selection-area">
+    //       <p>挑戦するレベルを選んでください</p>
+    //       <div class="difficulty-options">
+    //         <button class="menu-btn diff-select-btn" data-level="1">
+    //           <span class="diff-title">初級</span>
+    //           <span class="diff-desc">初めての方にオススメ (相手: R)</span>
+    //         </button>
+    //         <button class="menu-btn diff-select-btn" data-level="2">
+    //           <span class="diff-title">中級</span>
+    //           <span class="diff-desc">標準的なAIと勝負 (相手: SR)</span>
+    //         </button>
+    //         <button class="menu-btn diff-select-btn" data-level="3">
+    //           <span class="diff-title">上級</span>
+    //           <span class="diff-desc">最強のAIに挑戦！ (相手: SSR)</span>
+    //         </button>
+    //       </div>
+    //     </div>
+    //     <div id="diff-confirm-area" style="display: none; text-align: center;">
+    //       <p id="diff-confirm-text"></p>
+    //       <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+    //         <button class="menu-btn menu-btn-primary" id="btn-difficulty-start" style="flex: 1;">対戦開始！</button>
+    //       </div>
+    //     </div>
+    //     <button class="btn-secondary modal-close" id="difficulty-close">閉じる</button>
+    //   </div>
+    // </div>
+
+    // <!-- 設定モーダル -->
+    // <div class="modal-overlay" id="settings-modal" style="display: none;">
+    //   <div class="modal-content">
+    //     <h2>⚙️ 設定</h2>
+    //     <div class="setting-item">
+    //       <label>色覚多様性モード</label>
+    //       <label class="toggle-switch">
+    //         <input type="checkbox" id="setting-colorblind" ${data.settings.colorBlindMode ? 'checked' : ''}>
+    //         <span class="toggle-slider"></span>
+    //       </label>
+    //     </div>
+    //     <div class="setting-item">
+    //       <label>デバッグ（ダイヤ+100）</label>
+    //       <button class="btn-primary" id="btn-debug-currency" style="padding: 4px 12px; font-size: 0.8rem;">追加</button>
+    //     </div>
+    //     <div class="setting-item">
+    //       <label>データリセット</label>
+    //       <button class="btn-primary" id="btn-reset-data" style="padding: 4px 12px; font-size: 0.8rem;">リセット</button>
+    //     </div>
+    //     <button class="btn-secondary modal-close" id="settings-close">閉じる</button>
+    //   </div>
+    // </div>
+
+    // <!-- 解説モーダル -->
+    // <div class="modal-overlay" id="info-modal" style="display: none;">
+    //   <div class="modal-content info-modal-content">
+    //     <h2 id="info-title">解説</h2>
+    //     <div class="info-body" id="info-body"></div>
+    //     <button class="btn-secondary modal-close" id="info-close">閉じる</button>
+    //   </div>
+    // </div>
     screen.innerHTML = `
-      <div class="home-content">
-        <div class="home-logo">
-          <h1 class="game-title">神々の対局</h1>
-          <p class="game-subtitle">- Duel of Deities -</p>
-          <div class="game-version">${__APP_VERSION__}</div>
-        </div>
-
-        <div class="home-leader-display">
-          <div class="home-leader-icon ${leader.imageUrl ? 'has-image' : ''}" 
-               style="background: ${leader.imageUrl ? `url(${leader.imageUrl})` : `linear-gradient(135deg, ${leader.color}66, ${leader.color})`}">
-            ${leader.icon}
-          </div>
-          <div class="home-leader-info">
-            <span class="home-leader-name">${leader.name}</span>
-            <span class="home-leader-title">${leader.title}</span>
-          </div>
-        </div>
-
-        <div class="home-stats">
-          <div class="stat-badge clickable" id="stat-currency">💎 ${data.currency}</div>
-          <div class="stat-badge clickable" id="stat-trophy">🏆 ${data.totalWins}/${data.totalGames}</div>
-        </div>
-
-        <div class="home-menu">
-          <div class="menu-row">
-            <button class="menu-btn menu-btn-primary" id="btn-ai-battle">
-              <span class="menu-icon">⚔️</span>
-              <span class="menu-text">AI対戦</span>
-            </button>
-            <button class="menu-btn menu-btn-primary" id="btn-online-battle">
-              <span class="menu-icon">🌐</span>
-              <span class="menu-text">オンライン対戦</span>
-            </button>
-          </div>
-          
-          <div class="menu-row">
-            <button class="menu-btn menu-btn-divine" id="btn-formation">
-              <span class="menu-icon">👥</span>
-              <span class="menu-text">神格</span>
-            </button>
-            <button class="menu-btn menu-btn-divine" id="btn-gacha">
-              <span class="menu-icon">🎰</span>
-              <span class="menu-text">神託</span>
-            </button>
-          </div>
-
-          <div class="menu-row">
-            <button class="menu-btn menu-btn-tertiary" id="btn-help">
-              <span class="menu-icon">📖</span>
-              <span class="menu-text">ヘルプ</span>
-            </button>
-            <button class="menu-btn menu-btn-tertiary" id="btn-settings">
-              <span class="menu-icon">⚙️</span>
-              <span class="menu-text">設定</span>
-            </button>
-          </div>
-        </div>
-
-        </div>
-      </div>
-
-      <!-- 難易度選択モーダル -->
-      <div class="modal-overlay" id="difficulty-modal" style="display: none;">
-        <div class="modal-content difficulty-modal-content">
-          <h2 id="diff-modal-title">⚔️ AI対戦 - 難易度選択</h2>
-          <div id="diff-selection-area">
-            <p>挑戦するレベルを選んでください</p>
-            <div class="difficulty-options">
-              <button class="menu-btn diff-select-btn" data-level="1">
-                <span class="diff-title">初級</span>
-                <span class="diff-desc">初めての方にオススメ (相手: R)</span>
-              </button>
-              <button class="menu-btn diff-select-btn" data-level="2">
-                <span class="diff-title">中級</span>
-                <span class="diff-desc">標準的なAIと勝負 (相手: SR)</span>
-              </button>
-              <button class="menu-btn diff-select-btn" data-level="3">
-                <span class="diff-title">上級</span>
-                <span class="diff-desc">最強のAIに挑戦！ (相手: SSR)</span>
-              </button>
-            </div>
-          </div>
-          <div id="diff-confirm-area" style="display: none; text-align: center;">
-            <p id="diff-confirm-text"></p>
-            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-              <button class="menu-btn menu-btn-primary" id="btn-difficulty-start" style="flex: 1;">対戦開始！</button>
-            </div>
-          </div>
-          <button class="btn-secondary modal-close" id="difficulty-close">閉じる</button>
-        </div>
-      </div>
-
-      <!-- 設定モーダル -->
-      <div class="modal-overlay" id="settings-modal" style="display: none;">
-        <div class="modal-content">
-          <h2>⚙️ 設定</h2>
-          <div class="setting-item">
-            <label>色覚多様性モード</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="setting-colorblind" ${data.settings.colorBlindMode ? 'checked' : ''}>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          <div class="setting-item">
-            <label>デバッグ（ダイヤ+100）</label>
-            <button class="btn-primary" id="btn-debug-currency" style="padding: 4px 12px; font-size: 0.8rem;">追加</button>
-          </div>
-          <div class="setting-item">
-            <label>データリセット</label>
-            <button class="btn-primary" id="btn-reset-data" style="padding: 4px 12px; font-size: 0.8rem;">リセット</button>
-          </div>
-          <button class="btn-secondary modal-close" id="settings-close">閉じる</button>
-        </div>
-      </div>
-
-      <!-- 解説モーダル -->
-      <div class="modal-overlay" id="info-modal" style="display: none;">
-        <div class="modal-content info-modal-content">
-          <h2 id="info-title">解説</h2>
-          <div class="info-body" id="info-body"></div>
-          <button class="btn-secondary modal-close" id="info-close">閉じる</button>
-        </div>
-      </div>
+      <div>test</div>
     `;
 
     // イベント
