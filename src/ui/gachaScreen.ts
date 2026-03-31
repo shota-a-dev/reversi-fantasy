@@ -60,7 +60,7 @@ export function createGachaScreen(): HTMLElement {
         </div>
         <div class="gacha-result" id="gacha-result" style="display: none;">
         </div>
-        <div class="gacha-buttons">
+        <div class="btn-gacha-container">
           <button class="btn-gacha btn-single" id="btn-gacha-single" ${data.currency < GACHA_COST ? 'disabled' : ''}>
             単発召喚<br><small>${GACHA_COST} 💎</small>
           </button>
