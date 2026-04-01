@@ -20,7 +20,7 @@ export const MAX_UNCAP_LEVEL = 5;
 
 // マナ関連
 export const MAX_MANA = 10;
-export const INITIAL_MANA = 2;
+export const INITIAL_MANA = 0;
 
 // ガチャ
 export const GACHA_COST = 100; // ゲーム内通貨

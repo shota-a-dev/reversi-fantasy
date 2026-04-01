@@ -2,13 +2,14 @@ import './game.css';
 import { store } from '../../store/store';
 import { CHARACTERS } from '../../core/characters/characters';
 import { BLACK, WHITE } from '../../core/constants';
-import type { CellState } from '../../core/constants';
+import type { CellState, CharacterId } from '../../core/constants';
 import { GameManager } from '../../core/gameManager';
 import type { GameState, GameMode } from '../../core/gameManager';
 import { BoardRenderer } from '../../render/boardRenderer';
 import { screenManager } from '../screenManager';
 import { showResultScreen } from '../resultScreen/resultScreen';
 import { showModal } from '../components/modal/modal';
+import { showCharacterDetail } from '../formationDetail/formationDetail';
 
 let gameManager: GameManager | null = null;
 let renderer: BoardRenderer | null = null;
@@ -29,9 +30,8 @@ export function createGameScreen(): HTMLElement {
         <span class="stone-count" id="player-white-stones">2</span>
       </div>
       <div class="info-cell portrait-cell">
-        <div class="divine-portrait-wrapper">
+        <div class="divine-portrait-wrapper clickable" id="player-white-icon-btn">
           <div class="divine-portrait" id="player-white-icon"></div>
-          <div class="divine-rarity" id="player-white-rarity">SSR</div>
         </div>
       </div>
       <div class="info-cell timer-cell">
@@ -40,7 +40,8 @@ export function createGameScreen(): HTMLElement {
       <!-- 2行目 (比率2) -->
       <div class="info-cell mana-cell">
         <div class="mana-icon">💧</div>
-        <span class="mana-count" id="player-white-mana">2</span>
+        <span class="mana-count" id="player-white-mana">0</span>
+        <span class="mana-required" id="player-white-mana-required">/ -</span>
       </div>
       <div class="info-cell skill-cell">
         <button class="btn-skill btn-skill-enemy" id="btn-skill-enemy" disabled>
@@ -65,9 +66,8 @@ export function createGameScreen(): HTMLElement {
         <span class="stone-count" id="player-black-stones">2</span>
       </div>
       <div class="info-cell portrait-cell">
-        <div class="divine-portrait-wrapper">
+        <div class="divine-portrait-wrapper clickable" id="player-black-icon-btn">
           <div class="divine-portrait" id="player-black-icon"></div>
-          <div class="divine-rarity" id="player-black-rarity">SSR</div>
         </div>
       </div>
       <div class="info-cell timer-cell">
@@ -76,7 +76,8 @@ export function createGameScreen(): HTMLElement {
       <!-- 2行目 (比率2) -->
       <div class="info-cell mana-cell">
         <div class="mana-icon">💧</div>
-        <span class="mana-count" id="player-black-mana">2</span>
+        <span class="mana-count" id="player-black-mana">1</span>
+        <span class="mana-required" id="player-black-mana-required">/ -</span>
       </div>
       <div class="info-cell skill-cell">
         <button class="btn-skill" id="btn-skill">
@@ -100,16 +101,16 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
   const leaderChar = CHARACTERS[leaderId];
   const leaderUncap = data.characters[leaderId].uncapLevel;
 
-  let opponentId: string;
+  let opponentId: CharacterId;
   if (mode === 'ai') {
     const targetRarity = aiLevel === 1 ? 'R' : aiLevel === 2 ? 'SR' : 'SSR';
     const possibleOpponents = Object.keys(CHARACTERS).filter(id => CHARACTERS[id].rarity === targetRarity);
     opponentId = (possibleOpponents.length > 0 
-      ? possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)] 
-      : Object.keys(CHARACTERS)[0]);
+      ? possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)] as CharacterId
+      : Object.keys(CHARACTERS)[0] as CharacterId);
   } else {
     const opponentIds = Object.keys(CHARACTERS).filter(id => id !== leaderId);
-    opponentId = opponentIds[Math.floor(Math.random() * opponentIds.length)];
+    opponentId = opponentIds[Math.floor(Math.random() * opponentIds.length)] as CharacterId;
   }
   const opponentChar = CHARACTERS[opponentId];
 
@@ -123,9 +124,9 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
 
   // UI初期化
   const blackIcon = document.getElementById('player-black-icon');
-  const blackRarity = document.getElementById('player-black-rarity');
   const whiteIcon = document.getElementById('player-white-icon');
-  const whiteRarity = document.getElementById('player-white-rarity');
+  const blackManaReq = document.getElementById('player-black-mana-required');
+  const whiteManaReq = document.getElementById('player-white-mana-required');
   const skillIcon = document.getElementById('skill-icon');
   const skillIconEnemy = document.getElementById('skill-icon-enemy');
   const skillBtn = document.getElementById('btn-skill') as HTMLButtonElement;
@@ -136,9 +137,8 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
     blackIcon.className = `divine-portrait ${leaderChar.imageUrl ? 'has-image' : ''}`;
     if (leaderChar.imageUrl) (blackIcon as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
-  if (blackRarity) {
-    blackRarity.textContent = leaderChar.rarity;
-    blackRarity.className = `divine-rarity rarity-${leaderChar.rarity.toLowerCase()}`;
+  if (blackManaReq) {
+    blackManaReq.textContent = `/ ${leaderChar.activeSkill.manaCost}`;
   }
 
   if (whiteIcon) {
@@ -147,9 +147,30 @@ export function startGame(mode: GameMode, aiLevel: number = 2): void {
     whiteIcon.className = `divine-portrait ${opponentChar.imageUrl ? 'has-image' : ''}`;
     if (opponentChar.imageUrl) (whiteIcon as HTMLElement).style.backgroundImage = `url(${imgUrl})`;
   }
-  if (whiteRarity) {
-    whiteRarity.textContent = opponentChar.rarity;
-    whiteRarity.className = `divine-rarity rarity-${opponentChar.rarity.toLowerCase()}`;
+  if (whiteManaReq) {
+    whiteManaReq.textContent = `/ ${opponentChar.activeSkill.manaCost}`;
+  }
+
+  // キャラアイコンクリックで詳細表示（リスナー蓄積防止のためクローンして置換）
+  const blackIconBtn = document.getElementById('player-black-icon-btn');
+  const whiteIconBtn = document.getElementById('player-white-icon-btn');
+
+  if (blackIconBtn) {
+    const newBtn = blackIconBtn.cloneNode(true) as HTMLElement;
+    blackIconBtn.parentNode?.replaceChild(newBtn, blackIconBtn);
+    newBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showCharacterDetail(leaderId, () => {}, false);
+    });
+  }
+
+  if (whiteIconBtn) {
+    const newBtn = whiteIconBtn.cloneNode(true) as HTMLElement;
+    whiteIconBtn.parentNode?.replaceChild(newBtn, whiteIconBtn);
+    newBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showCharacterDetail(opponentId, () => {}, false);
+    });
   }
 
   // スキルアイコン初期化

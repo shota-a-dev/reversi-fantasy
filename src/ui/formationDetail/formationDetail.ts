@@ -6,7 +6,10 @@ import type { CharacterId } from '../../core/constants';
 /**
  * キャラ詳細画面を表示する
  */
-export function showCharacterDetail(id: CharacterId, onUpdate: () => void): void {
+export function showCharacterDetail(id: CharacterId, onUpdate: () => void, showSelectButton: boolean = true): void {
+  // 既に詳細画面が開いている場合は重複して開かない
+  if (document.querySelector('.detail-modal-overlay')) return;
+
   const char = CHARACTERS[id];
   const state = store.getCharacter(id);
   const data = store.getData();
@@ -34,7 +37,7 @@ export function showCharacterDetail(id: CharacterId, onUpdate: () => void): void
       <div class="detail-scroll-area">
         <div class="detail-skills">
           <div class="skill-box active-skill">
-            <h4>🗡️ 権能（アクティブ）</h4>
+            <h4>🗡️ 権能（アクティブ） <span class="skill-mana-cost">💧${char.activeSkill.manaCost}</span></h4>
             <p class="skill-name">${char.activeSkill.name}</p>
             <p class="skill-desc">${char.activeSkill.description}</p>
           </div>
@@ -55,9 +58,11 @@ export function showCharacterDetail(id: CharacterId, onUpdate: () => void): void
         </div>
       </div>
 
-      <button class="btn-select-leader" id="btn-set-leader" ${isLeader ? 'disabled' : ''}>
-        ${isLeader ? '選択中' : '選択する'}
-      </button>
+      ${showSelectButton ? `
+        <button class="btn-select-leader" id="btn-set-leader" ${isLeader ? 'disabled' : ''}>
+          ${isLeader ? '選択中' : '選択する'}
+        </button>
+      ` : ''}
     </div>
 
     <!-- 拡大プレビューレイヤー -->
@@ -74,11 +79,15 @@ export function showCharacterDetail(id: CharacterId, onUpdate: () => void): void
   `;
 
   // イベント: 閉じる（背景タップ）
-  overlay.addEventListener('click', (e) => {
+  const closeDetail = (e: Event) => {
     if (e.target === overlay) {
+      e.preventDefault();
+      e.stopPropagation();
       document.body.removeChild(overlay);
     }
-  });
+  };
+  overlay.addEventListener('click', closeDetail);
+  overlay.addEventListener('touchstart', closeDetail, { passive: false });
 
   // イベント: リーダー設定
   overlay.querySelector('#btn-set-leader')?.addEventListener('click', (e) => {

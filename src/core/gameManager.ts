@@ -153,7 +153,7 @@ export class GameManager {
       character: blackChar,
       uncapLevel: blackUncap,
       isHuman: true,
-      mana: INITIAL_MANA,
+      mana: 1, // 先攻は1マナからスタート
       maxMana: MAX_MANA,
       scoreMultiplier: this.calculateScoreMultiplier(blackChar, blackUncap),
       timeBonus: 0,
