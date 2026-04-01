@@ -60,13 +60,3 @@
 
 ## 質問事項
 以下は質問になるので修正は行わないこと。修正案の提示までとすること。
-<!-- - 対戦画面: iPhoneでホーム画面に追加して表示すると、画面外にはみ出るようになりました。原因を特定してください。height: 100dvh (Dynamic Viewport Height) を使用で治る？
-   - iPhoneで画面外にはみ出る問題について:
-       - 原因: iOSのSafari等では、100vh
-         はアドレスバーが表示されているかに関わらず「ツールバーがない状態の画面高さ」を基準にするため、下部
-         がはみ出してしまいます。
-       - 修正案: CSSで height: 100vh; としている箇所を height: 100dvh; (Dynamic Viewport Height)
-         に変更することで解決します。
-       - 具体的な箇所: src/ui/gameScreen/game.css の #screen-game クラス、および src/ui/styles/base.css の 
-         .screen クラスを 100dvh に変更することを推奨します。
- -->
