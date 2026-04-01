@@ -13,7 +13,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 3fr 2fr; /* 比率 3:2 */
-  height: 25vh;
+  /* height: 25vh; */
+  /* flex: 2.5; */
   padding: 10px;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(5px);
@@ -143,8 +144,7 @@
 
 /* 盤面コンテナ */
 .board-container {
-  /* flex: 1; */
-  height: 50vh;
+  flex: 5;
   display: flex;
   align-items: center;
   justify-content: center;
